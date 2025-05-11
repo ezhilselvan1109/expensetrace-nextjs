@@ -1,4 +1,3 @@
-// app/tags/page.tsx — Server Component
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import TagsClient from "./TagsClient";
 

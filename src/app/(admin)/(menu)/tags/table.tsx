@@ -45,10 +45,10 @@ export default function TableContent({ onEdit, reloadFlag }: Props) {
 
   return (
     <Table>
-      <TableHeader className="border-gray-100 dark:border-gray-800 border-y">
+      <TableHeader className="border-y border-gray-100 dark:border-gray-800">
         <TableRow>
           <TableCell isHeader>Name</TableCell>
-          <TableCell isHeader>Options</TableCell>
+          <TableCell isHeader>Actions</TableCell>
         </TableRow>
       </TableHeader>
       <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
