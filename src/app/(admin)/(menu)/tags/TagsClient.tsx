@@ -15,7 +15,7 @@ export default function TagsClient() {
 
   useEffect(() => {
     if (mode === "edit" && editId) {
-      fetch(`http://localhost:8080/api/v1/tags/tag/${editId}`, {
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tags/tag/${editId}`, {
         credentials: "include",
       })
         .then((res) => res.json())

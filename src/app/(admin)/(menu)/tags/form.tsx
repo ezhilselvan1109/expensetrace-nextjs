@@ -22,11 +22,11 @@ export default function Form({ mode, tag, onSuccess, onCancel }: FormProps) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
+        console.log("process.env.NEXT_PUBLIC_API_BASE_URL : "+process.env.NEXT_PUBLIC_API_BASE_URL)
         const url =
             mode === "add"
-                ? "http://localhost:8080/api/v1/tags/add"
-                : `http://localhost:8080/api/v1/tags/tag/${tag?.id}/update`;
+                ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/tags/add`
+                : `${process.env.NEXT_PUBLIC_API_BASE_URL}/tags/tag/${tag?.id}/update`;
 
         const res = await fetch(url, {
             method: mode === "add" ? "POST" : "PUT",

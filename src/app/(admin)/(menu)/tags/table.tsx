@@ -22,7 +22,7 @@ export default function TableContent({ onEdit, reloadFlag }: Props) {
   }, [reloadFlag]);
 
   const fetchTags = async () => {
-    const res = await fetch("http://localhost:8080/api/v1/tags/all", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tags/all`, {
       credentials: "include",
     });
     const result = await res.json();
@@ -32,7 +32,7 @@ export default function TableContent({ onEdit, reloadFlag }: Props) {
   };
 
   const handleDelete = async (id: number) => {
-    const res = await fetch(`http://localhost:8080/api/v1/tags/tag/${id}/delete`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tags/tag/${id}/delete`, {
       method: "DELETE",
       credentials: "include",
     });
