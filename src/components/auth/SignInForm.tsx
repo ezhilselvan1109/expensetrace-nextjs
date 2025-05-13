@@ -39,8 +39,12 @@ export default function SignInForm() {
 
       alert("Login successful!");
       router.push("/"); // ✅ redirect after login
-    } catch (error: any) {
-      alert(error.message || "Something went wrong.");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        alert(error.message || "Something went wrong.");
+      } else {
+        alert("Something went wrong.");
+      }
     }
   };
 
