@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import Checkbox from "@/components/form/input/Checkbox";
-import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Input from "../form/InputField";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -73,10 +73,10 @@ export default function SignUpForm() {
                 </Label>
                 <Input
                   type="text"
-                  id="fname"
+                  id="firstname"
                   name="fname"
                   placeholder="Enter your first name"
-                  value={formData.fname}
+                  value={formData.firstName}
                   onChange={handleChange}
                 />
               </div>
@@ -86,10 +86,10 @@ export default function SignUpForm() {
                 </Label>
                 <Input
                   type="text"
-                  id="lname"
+                  id="lastname"
                   name="lname"
                   placeholder="Enter your last name"
-                  value={formData.lname}
+                  value={formData.lastName}
                   onChange={handleChange}
                 />
               </div>
