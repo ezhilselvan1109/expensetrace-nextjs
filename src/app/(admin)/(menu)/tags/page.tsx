@@ -1,11 +1,12 @@
-import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import TagsClient from "./TagsClient";
+import ComponentCard from "@/components/common/ComponentCard";
 
 export default function TagsPage() {
   return (
-    <div>
-      <PageBreadcrumb pageTitle="Tags" />
-      <TagsClient />
-    </div>
+      <div className="space-y-6">
+        <ComponentCard title="Basic Table 1">
+          <TagsClient />
+        </ComponentCard>
+      </div>
   );
 }

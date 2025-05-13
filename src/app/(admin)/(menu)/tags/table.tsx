@@ -44,34 +44,51 @@ export default function TableContent({ onEdit, reloadFlag }: Props) {
   };
 
   return (
-    <Table>
-      <TableHeader className="border-y border-gray-100 dark:border-gray-800">
-        <TableRow>
-          <TableCell isHeader>Name</TableCell>
-          <TableCell isHeader>Actions</TableCell>
-        </TableRow>
-      </TableHeader>
-      <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-        {tags.map((tag) => (
-          <TableRow key={tag.id}>
-            <TableCell>{tag.name}</TableCell>
-            <TableCell>
-              <button
-                onClick={() => onEdit(tag)}
-                className="text-blue-500 hover:underline mr-4"
-              >
-                Update
-              </button>
-              <button
-                onClick={() => handleDelete(tag.id)}
-                className="text-red-500 hover:underline"
-              >
-                Delete
-              </button>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+      <div className="max-w-full overflow-x-auto">
+        <div className="min-w-[1102px]">
+          <Table>
+            <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+              <TableRow>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+                  Name
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+                  Actions
+                </TableCell>
+              </TableRow>
+            </TableHeader>
+            <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+              {tags.map((tag) => (
+                <TableRow key={tag.id}>
+                  <TableCell
+                    className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {tag.name}
+                  </TableCell>
+                  <TableCell>
+                    <button
+                      onClick={() => onEdit(tag)}
+                      className="text-blue-500 hover:underline mr-4"
+                    >
+                      Update
+                    </button>
+                    <button
+                      onClick={() => handleDelete(tag.id)}
+                      className="text-red-500 hover:underline"
+                    >
+                      Delete
+                    </button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+    </div>
   );
 }
