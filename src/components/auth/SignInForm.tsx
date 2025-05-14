@@ -28,7 +28,7 @@ export default function SignInForm() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
-        credentials: "include", // ✅ allows cookie to be set
+        credentials: "include"
       });
 
       const result = await res.json();
