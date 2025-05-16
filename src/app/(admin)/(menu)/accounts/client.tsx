@@ -4,12 +4,16 @@ import { useState } from 'react';
 
 const tabs = ['Bank Account', 'Wallet', 'Credit Card'];
 const paymentTypes = ['UPI', 'Check', 'Debit Card', 'Internet Banking'];
+const daysOfMonth = Array.from({ length: 31 }, (_, i) => i + 1);
 
 export default function SegmentedTabs() {
   const [activeTab, setActiveTab] = useState('Bank Account');
   const [paymentModes, setPaymentModes] = useState([
     { id: Date.now(), name: '', type: 'UPI' },
   ]);
+
+  const [billingStartDay, setBillingStartDay] = useState(1);
+  const [dueDateDay, setDueDateDay] = useState(1);
 
   const handleChange = (id: number, field: 'name' | 'type', value: string) => {
     setPaymentModes((prev) =>
@@ -55,6 +59,37 @@ export default function SegmentedTabs() {
     />
   );
 
+  // Segmented day picker as inline buttons
+  const DaySegmentedPicker = ({
+    label,
+    value,
+    onChange,
+  }: {
+    label: string;
+    value: number;
+    onChange: (val: number) => void;
+  }) => (
+    <div>
+      <label className="block mb-1 font-semibold">{label}</label>
+      <div className="flex flex-wrap gap-1 max-h-36 overflow-y-auto border border-gray-300 dark:border-gray-700 rounded-md p-2 bg-white dark:bg-gray-900">
+        {daysOfMonth.map((day) => (
+          <button
+            key={day}
+            type="button"
+            onClick={() => onChange(day)}
+            className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-medium transition ${
+              value === day
+                ? 'bg-blue-600 text-white shadow'
+                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-700'
+            }`}
+          >
+            {day}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div className="w-full max-w-md mx-auto mt-10 px-4 text-gray-800 dark:text-gray-100">
       {/* Tabs */}
@@ -82,7 +117,9 @@ export default function SegmentedTabs() {
             <PillInput id="bank-balance" label="Current Balance" type="number" />
 
             <div>
-              <label className="block mb-2 font-medium">Linked Payment Modes</label>
+              <label className="block mb-2 font-medium">
+                Linked Payment Modes
+              </label>
 
               {paymentModes.map((mode, index) => (
                 <div key={mode.id} className="mb-6">
@@ -145,9 +182,29 @@ export default function SegmentedTabs() {
         )}
 
         {activeTab === 'Credit Card' && (
-          <div className="text-center py-10 italic text-gray-500 dark:text-gray-400">
-            Credit Card content here.
-          </div>
+          <form className="space-y-6">
+            <PillInput id="card-name" label="Name" />
+            <PillInput
+              id="card-available-limit"
+              label="Current Available Limit"
+              type="number"
+            />
+            <PillInput
+              id="card-total-limit"
+              label="Total Credit Limit"
+              type="number"
+            />
+            <DaySegmentedPicker
+              label="Billing Cycle Start Date (Day of Month)"
+              value={billingStartDay}
+              onChange={setBillingStartDay}
+            />
+            <DaySegmentedPicker
+              label="Payment Due Date (Day of Month)"
+              value={dueDateDay}
+              onChange={setDueDateDay}
+            />
+          </form>
         )}
       </div>
     </div>
