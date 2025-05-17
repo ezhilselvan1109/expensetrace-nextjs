@@ -14,7 +14,7 @@ const paymentTypeMap: Record<string, string> = {
   'Internet Banking': '4',
 };
 
-export default function SegmentedTabs() {
+export default function Client() {
   const [activeTab, setActiveTab] = useState('Bank Account');
   const [paymentModes, setPaymentModes] = useState([
     { id: Date.now(), name: '', type: 'UPI' },
@@ -93,8 +93,8 @@ export default function SegmentedTabs() {
     setMessage('');
     try {
       const payload = buildPayload();
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/accounts/add`, {
+      const endpoint = activeTab === 'Bank Account' ? 'bank' : activeTab === 'Wallet' ? 'wallet' : 'credit-card'
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/accounts/${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
