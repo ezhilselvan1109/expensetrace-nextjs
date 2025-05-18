@@ -1,13 +1,12 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams} from 'next/navigation';
 import axios from 'axios';
 import TransactionForm from '../../transactionForm';
 
 export default function UpdateTransactionPage() {
   const params = useParams();
-  const router = useRouter();
   const transactionId = params.id;
 
   const [initialData, setInitialData] = useState(null);

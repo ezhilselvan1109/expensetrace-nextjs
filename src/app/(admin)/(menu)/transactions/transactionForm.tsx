@@ -19,6 +19,11 @@ type TransactionFormProps = {
   initialData?: Partial<FormData & { id: string }>;
 };
 
+type OptionItem = {
+  id: string;
+  name: string;
+};
+
 const TransactionForm: React.FC<TransactionFormProps> = ({ initialData }) => {
   const router = useRouter();
 
@@ -42,8 +47,8 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ initialData }) => {
     },
   });
 
-  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
-  const [accounts, setAccounts] = useState<{ id: string; name: string }[]>([]);
+  const [categories, setCategories] = useState<OptionItem[]>([]);
+  const [accounts, setAccounts] = useState<OptionItem[]>([]);
 
   const activeType = watch('type');
 
@@ -55,7 +60,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ initialData }) => {
           { withCredentials: true }
         );
         setCategories(res.data.data);
-        if (!res.data.data.find((cat: any) => cat.id === watch('categoryId'))) {
+        if (!res.data.data.find((cat: OptionItem) => cat.id === watch('categoryId'))) {
           setValue('categoryId', '');
         }
       } catch (error) {
@@ -70,7 +75,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ initialData }) => {
           { withCredentials: true }
         );
         setAccounts(res.data.data);
-        if (!res.data.data.find((acc: any) => acc.id === watch('accountId'))) {
+        if (!res.data.data.find((acc: OptionItem) => acc.id === watch('accountId'))) {
           setValue('accountId', '');
         }
       } catch (error) {

@@ -14,18 +14,34 @@ type Transaction = {
   description: string;
 };
 
+type PaginatedResponse = {
+  content: Transaction[];
+  totalPages: number;
+  number: number;
+  totalElements: number;
+};
+
 export default function Transactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const pageSize = 10;
+
   const router = useRouter();
 
   useEffect(() => {
     const fetchTransactions = async () => {
+      setLoading(true);
       try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions`, {
+        const res = await axios.get<{
+          data: PaginatedResponse;
+        }>(`${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions?page=${page}&size=${pageSize}`, {
           withCredentials: true,
         });
-        setTransactions(res.data.data);
+
+        setTransactions(res.data.data.content);
+        setTotalPages(res.data.data.totalPages);
       } catch (error) {
         console.error('Failed to fetch transactions:', error);
       } finally {
@@ -34,7 +50,7 @@ export default function Transactions() {
     };
 
     fetchTransactions();
-  }, []);
+  }, [page]);
 
   const renderIcon = (type: number) => {
     if (type === 1) return <ArrowDownCircle className="text-green-500" size={18} />;
@@ -44,6 +60,14 @@ export default function Transactions() {
 
   const renderTypeText = (type: number) => {
     return type === 1 ? 'Income' : type === 2 ? 'Expense' : 'Transfer';
+  };
+
+  const handlePrevious = () => {
+    if (page > 0) setPage(page - 1);
+  };
+
+  const handleNext = () => {
+    if (page < totalPages - 1) setPage(page + 1);
   };
 
   return (
@@ -106,7 +130,7 @@ export default function Transactions() {
           </div>
 
           {/* Mobile Cards */}
-          <div className="md:hidden space-y-4">
+          <div className="md:hidden space-y-4 mt-4">
             {transactions.map((tx) => (
               <div
                 key={tx.id}
@@ -130,6 +154,27 @@ export default function Transactions() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Pagination Controls */}
+          <div className="flex justify-center gap-4 mt-8">
+            <button
+              onClick={handlePrevious}
+              disabled={page === 0}
+              className="px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span className="self-center text-gray-700 dark:text-gray-300">
+              Page {page + 1} of {totalPages}
+            </span>
+            <button
+              onClick={handleNext}
+              disabled={page >= totalPages - 1}
+              className="px-4 py-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white disabled:opacity-50"
+            >
+              Next
+            </button>
           </div>
         </>
       )}
