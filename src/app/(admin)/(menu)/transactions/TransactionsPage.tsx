@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { ArrowDownCircle, ArrowUpCircle, Repeat } from 'lucide-react';
 
 type Transaction = {
   id: string;
@@ -13,7 +14,7 @@ type Transaction = {
   description: string;
 };
 
-export default function TransactionsPage() {
+export default function Transactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -35,51 +36,102 @@ export default function TransactionsPage() {
     fetchTransactions();
   }, []);
 
+  const renderIcon = (type: number) => {
+    if (type === 1) return <ArrowDownCircle className="text-green-500" size={18} />;
+    if (type === 2) return <ArrowUpCircle className="text-red-500" size={18} />;
+    return <Repeat className="text-blue-500" size={18} />;
+  };
+
+  const renderTypeText = (type: number) => {
+    return type === 1 ? 'Income' : type === 2 ? 'Expense' : 'Transfer';
+  };
+
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Transactions</h1>
+    <div className="max-w-5xl mx-auto">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Transactions</h1>
         <button
           onClick={() => router.push('/transactions/add')}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl shadow transition"
         >
-          Add Transaction
+          + Add Transaction
         </button>
       </div>
 
       {loading ? (
-        <p>Loading transactions...</p>
+        <div className="text-center text-gray-500 dark:text-gray-400 py-12 text-lg">
+          Loading transactions...
+        </div>
       ) : transactions.length === 0 ? (
-        <p>No transactions found.</p>
+        <div className="text-center text-gray-500 dark:text-gray-400 py-12 text-lg">
+          No transactions found.
+        </div>
       ) : (
-        <table className="min-w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border border-gray-300 px-4 py-2 text-left">Date</th>
-              <th className="border border-gray-300 px-4 py-2 text-left">Time</th>
-              <th className="border border-gray-300 px-4 py-2 text-left">Type</th>
-              <th className="border border-gray-300 px-4 py-2 text-right">Amount</th>
-              <th className="border border-gray-300 px-4 py-2 text-left">Description</th>
-            </tr>
-          </thead>
-          <tbody>
+        <>
+          {/* Desktop Table */}
+          <div className="hidden md:block bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden border border-gray-200 dark:border-gray-700">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-semibold text-sm">
+                <tr>
+                  <th className="px-6 py-4">Date</th>
+                  <th className="px-6 py-4">Time</th>
+                  <th className="px-6 py-4">Type</th>
+                  <th className="px-6 py-4 text-right">Amount</th>
+                  <th className="px-6 py-4">Description</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                {transactions.map((tx) => (
+                  <tr
+                    key={tx.id}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer"
+                    onClick={() => router.push(`/transactions/update/${tx.id}`)}
+                  >
+                    <td className="px-6 py-4 text-gray-800 dark:text-gray-100">{tx.date}</td>
+                    <td className="px-6 py-4 text-gray-800 dark:text-gray-100">{tx.time}</td>
+                    <td className="px-6 py-4 flex items-center gap-2 text-gray-800 dark:text-gray-100">
+                      {renderIcon(tx.type)}
+                      <span>{renderTypeText(tx.type)}</span>
+                    </td>
+                    <td className="px-6 py-4 text-right font-semibold text-gray-800 dark:text-gray-100">
+                      ${tx.amount.toFixed(2)}
+                    </td>
+                    <td className="px-6 py-4 text-gray-800 dark:text-gray-100">
+                      {tx.description || '-'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Cards */}
+          <div className="md:hidden space-y-4">
             {transactions.map((tx) => (
-              <tr
+              <div
                 key={tx.id}
-                className="cursor-pointer hover:bg-gray-50"
                 onClick={() => router.push(`/transactions/update/${tx.id}`)}
+                className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border border-gray-200 dark:border-gray-700 hover:shadow-md transition cursor-pointer"
               >
-                <td className="border border-gray-300 px-4 py-2">{tx.date}</td>
-                <td className="border border-gray-300 px-4 py-2">{tx.time}</td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {tx.type === 1 ? 'Income' : tx.type === 2 ? 'Expense' : 'Transfer'}
-                </td>
-                <td className="border border-gray-300 px-4 py-2 text-right">${tx.amount.toFixed(2)}</td>
-                <td className="border border-gray-300 px-4 py-2">{tx.description || '-'}</td>
-              </tr>
+                <div className="flex justify-between items-center mb-2">
+                  <div className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
+                    {renderIcon(tx.type)}
+                    <span>{renderTypeText(tx.type)}</span>
+                  </div>
+                  <div className="text-base font-bold text-gray-800 dark:text-white">
+                    ${tx.amount.toFixed(2)}
+                  </div>
+                </div>
+                <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  {tx.date} at {tx.time}
+                </div>
+                <div className="text-sm text-gray-700 dark:text-gray-200">
+                  {tx.description || '-'}
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
+          </div>
+        </>
       )}
     </div>
   );
