@@ -62,24 +62,27 @@ export default function List() {
           })
         );
 
-        const [availableRes, creditRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/accounts/available-amount`, {
-            credentials: 'include',
-          }),
-          fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/accounts/credit-amount`, {
-            credentials: 'include',
-          }),
-        ]);
+        // const [availableRes, creditRes] = await Promise.all([
+        //   fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/accounts/available-amount`, {
+        //     credentials: 'include',
+        //   }),
+        //   fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/accounts/credit-amount`, {
+        //     credentials: 'include',
+        //   }),
+        // ]);
 
-        if (!availableRes.ok || !creditRes.ok) {
-          throw new Error('Failed to fetch totals');
-        }
+        // if (!availableRes.ok || !creditRes.ok) {
+        //   throw new Error('Failed to fetch totals');
+        // }
 
-        const availableJson = await availableRes.json();
-        const creditJson = await creditRes.json();
+        // const availableJson = await availableRes.json();
+        // const creditJson = await creditRes.json();
 
-        setAvailableAmount(availableJson.data);
-        setCreditUsedAmount(creditJson.data);
+        // setAvailableAmount(availableJson.data);
+        // setCreditUsedAmount(creditJson.data);
+
+        setAvailableAmount(10000);
+        setCreditUsedAmount(100);
 
         const grouped: Record<AccountType, Account[]> = {
           wallet: [],
