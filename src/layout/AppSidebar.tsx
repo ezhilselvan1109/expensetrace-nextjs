@@ -9,6 +9,7 @@ import {
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
+  PageIcon,
   PieChartIcon,
   UserCircleIcon,
 } from "../icons/index";
@@ -43,19 +44,39 @@ const navItems: NavItem[] = [
   },
   {
     icon: <UserCircleIcon />,
-    name: "Budgets",
-    path: "/budgets",
-  },
-  {
-    icon: <UserCircleIcon />,
     name: "Tags",
     path: "/tags",
   },
   {
     icon: <UserCircleIcon />,
+    name: "Budgets",
+    path: "/budgets",
+  },
+  
+  {
+    icon: <UserCircleIcon />,
     name: "Categories",
     path: "/categories",
-  }
+  },
+  {
+    icon: <UserCircleIcon />,
+    name: "Scheduled Txns",
+    path: "/scheduled-txns",
+  },
+  {
+    icon: <UserCircleIcon />,
+    name: "Debts",
+    path: "/debts",
+  },
+  {
+    name: "Views",
+    icon: <PageIcon />,
+    subItems: [
+      { name: "Day", path: "/day", pro: false },
+      { name: "Calendar", path: "/calendar", pro: false },
+      { name: "Custom", path: "/custom", pro: false }
+    ],
+  },
 ];
 
 const othersItems: NavItem[] = [
