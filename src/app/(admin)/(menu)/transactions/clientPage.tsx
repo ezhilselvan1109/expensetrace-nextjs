@@ -21,7 +21,7 @@ type PaginatedResponse = {
   totalElements: number;
 };
 
-export default function Transactions() {
+export default function ClientPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -83,9 +83,11 @@ export default function Transactions() {
       </div>
 
       {loading ? (
-        <div className="text-center text-gray-500 dark:text-gray-400 py-12 text-lg">
-          Loading transactions...
-        </div>
+        <div className="space-y-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-26 bg-gray-200 dark:bg-gray-700 rounded-2xl animate-pulse" />
+            ))}
+          </div>
       ) : transactions.length === 0 ? (
         <div className="text-center text-gray-500 dark:text-gray-400 py-12 text-lg">
           No transactions found.

@@ -6,7 +6,14 @@ const tabs = ['Bank Account', 'Wallet', 'Credit Card'];
 const paymentTypes = ['UPI', 'Check', 'Debit Card', 'Internet Banking'];
 const daysOfMonth = Array.from({ length: 31 }, (_, i) => i + 1);
 
-export default function SegmentedTabs() {
+const paymentTypeMap: Record<string, string> = {
+  'UPI': '1',
+  'Check': '2',
+  'Debit Card': '3',
+  'Internet Banking': '4',
+};
+
+export default function Form() {
   const [activeTab, setActiveTab] = useState('Bank Account');
   const [paymentModes, setPaymentModes] = useState([
     { id: Date.now(), name: '', type: 'UPI' },
@@ -57,7 +64,10 @@ export default function SegmentedTabs() {
       return {
         ...base,
         currentBalance: Number(form.currentBalance),
-        paymentModesDto: paymentModes.map(({ name, type }) => ({ name, type })),
+        paymentModesDto: paymentModes.map(({ name, type }) => ({
+          name,
+          type: paymentTypeMap[type] || '1',
+        })),
       };
     } else if (activeTab === 'Wallet') {
       return {
@@ -82,8 +92,8 @@ export default function SegmentedTabs() {
     setMessage('');
     try {
       const payload = buildPayload();
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/accounts/add`, {
+      const endpoint = activeTab === 'Bank Account' ? 'bank' : activeTab === 'Wallet' ? 'wallet' : 'credit-card'
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/accounts/${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -153,8 +163,8 @@ export default function SegmentedTabs() {
             type="button"
             onClick={() => onChange(day)}
             className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-medium transition ${value === day
-                ? 'bg-blue-600 text-white shadow'
-                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-700'
+              ? 'bg-blue-600 text-white shadow'
+              : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-700'
               }`}
           >
             {day}
@@ -173,8 +183,8 @@ export default function SegmentedTabs() {
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`flex-1 text-sm font-medium rounded-full py-2 transition-all duration-200 ${activeTab === tab
-                ? 'bg-white dark:bg-gray-900 shadow text-black dark:text-white'
-                : 'text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white'
+              ? 'bg-white dark:bg-gray-900 shadow text-black dark:text-white'
+              : 'text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white'
               }`}
           >
             {tab}
@@ -263,8 +273,8 @@ export default function SegmentedTabs() {
                         type="button"
                         onClick={() => handleChange(mode.id, 'type', type)}
                         className={`px-4 py-1 text-sm rounded-full border transition ${mode.type === type
-                            ? 'bg-blue-600 text-white border-blue-600'
-                            : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'
+                          ? 'bg-blue-600 text-white border-blue-600'
+                          : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'
                           }`}
                       >
                         {type}
