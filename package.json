@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "generate-api": "openapi-typescript-codegen --input ./swagger.json --output ./src/api-client --client axios"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.17",
@@ -29,6 +30,7 @@
     "react-dom": "^19.0.0",
     "react-dropzone": "^14.3.8",
     "react-hook-form": "^7.56.4",
+    "react-hot-toast": "^2.5.2",
     "swiper": "^11.2.6",
     "tailwind-merge": "^3.2.0"
   },
@@ -43,6 +45,7 @@
     "dotenv": "^16.5.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
+    "openapi-typescript-codegen": "^0.29.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^4",
     "typescript": "^5"

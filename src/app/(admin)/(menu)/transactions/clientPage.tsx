@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { ArrowDownCircle, ArrowUpCircle, Repeat } from 'lucide-react';
+import { TransactionsService } from '@/api-client';
 
 type Transaction = {
   id: string;
@@ -34,14 +34,12 @@ export default function ClientPage() {
     const fetchTransactions = async () => {
       setLoading(true);
       try {
-        const res = await axios.get<{
-          data: PaginatedResponse;
-        }>(`${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions?page=${page}&size=${pageSize}`, {
-          withCredentials: true,
-        });
+        const res = await TransactionsService.getAllTransactions(page, pageSize);
+        // res.data is of type ApiResponse, we assume it contains PaginatedResponse in data field
+        const paginatedData = res.data as unknown as PaginatedResponse;
 
-        setTransactions(res.data.data.content);
-        setTotalPages(res.data.data.totalPages);
+        setTransactions(paginatedData.content);
+        setTotalPages(paginatedData.totalPages);
       } catch (error) {
         console.error('Failed to fetch transactions:', error);
       } finally {
@@ -84,10 +82,10 @@ export default function ClientPage() {
 
       {loading ? (
         <div className="space-y-6">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="h-26 bg-gray-200 dark:bg-gray-700 rounded-2xl animate-pulse" />
-            ))}
-          </div>
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-26 bg-gray-200 dark:bg-gray-700 rounded-2xl animate-pulse" />
+          ))}
+        </div>
       ) : transactions.length === 0 ? (
         <div className="text-center text-gray-500 dark:text-gray-400 py-12 text-lg">
           No transactions found.
@@ -122,9 +120,7 @@ export default function ClientPage() {
                     <td className="px-6 py-4 text-right font-semibold text-gray-800 dark:text-gray-100">
                       ${tx.amount.toFixed(2)}
                     </td>
-                    <td className="px-6 py-4 text-gray-800 dark:text-gray-100">
-                      {tx.description || '-'}
-                    </td>
+                    <td className="px-6 py-4 text-gray-800 dark:text-gray-100">{tx.description || '-'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -151,9 +147,7 @@ export default function ClientPage() {
                 <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
                   {tx.date} at {tx.time}
                 </div>
-                <div className="text-sm text-gray-700 dark:text-gray-200">
-                  {tx.description || '-'}
-                </div>
+                <div className="text-sm text-gray-700 dark:text-gray-200">{tx.description || '-'}</div>
               </div>
             ))}
           </div>

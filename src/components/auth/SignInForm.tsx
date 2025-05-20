@@ -7,44 +7,35 @@ import Button from "@/components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import Input from "../form/InputField";
+import { AuthService, LoginRequestDto } from "@/api-client";
+import { toast } from 'react-hot-toast';
 
 export default function SignInForm() {
   const router = useRouter();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<LoginRequestDto>({
     email: "",
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-        credentials: "include"
-      });
-
-      const result = await res.json();
-
-      if (!res.ok) {
-        throw new Error(result.message || "Login failed");
-      }
-
-      alert("Login successful!");
-      router.push("/"); // ✅ redirect after login
+      await AuthService.login(formData);
+      router.push("/dashboard");
     } catch (error: unknown) {
       if (error instanceof Error) {
-        alert(error.message || "Something went wrong.");
+        toast.error(error.message ||"Login failed");
       } else {
-        alert("Something went wrong.");
+        toast.error("Login failed");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -120,6 +111,7 @@ export default function SignInForm() {
                     }
                     placeholder="info@gmail.com"
                     type="email"
+                    required
                   />
                 </div>
                 <div>
@@ -135,6 +127,7 @@ export default function SignInForm() {
                       }
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"
+                      required
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -163,8 +156,8 @@ export default function SignInForm() {
                   </Link>
                 </div>
                 <div>
-                  <Button className="w-full" size="sm" type="submit">
-                    Sign in
+                  <Button className="w-full" size="sm" type="submit" disabled={loading}>
+                    {loading ? "Signing in..." : "Sign in"}
                   </Button>
                 </div>
               </div>

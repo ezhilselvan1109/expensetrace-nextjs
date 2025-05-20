@@ -2,14 +2,14 @@
 
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { AccountService, CategoryService, TransactionRequestDTO, TransactionsService } from '@/api-client';
 
 type FormData = {
-  type: string; // '1' | '2' | '3'
-  date: string; // yyyy-mm-dd
-  time: string; // hh:mm
-  amount: string; // number string
+  type: string;
+  date: string;
+  time: string;
+  amount: string;
   categoryId: string;
   accountId: string;
   description?: string;
@@ -19,9 +19,19 @@ type TransactionFormProps = {
   initialData?: Partial<FormData & { id: string }>;
 };
 
-type OptionItem = {
+type AccountOptionItem = {
   id: string;
   name: string;
+  default:boolean;
+  type:number
+};
+
+type CategoryOptionItem = {
+  id: string;
+  name: string;
+  color:string;
+  icon:string;
+  type:number;
 };
 
 const TransactionForm: React.FC<TransactionFormProps> = ({ initialData }) => {
@@ -47,20 +57,17 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ initialData }) => {
     },
   });
 
-  const [categories, setCategories] = useState<OptionItem[]>([]);
-  const [accounts, setAccounts] = useState<OptionItem[]>([]);
+  const [categories, setCategories] = useState<CategoryOptionItem[]>([]);
+  const [accounts, setAccounts] = useState<AccountOptionItem[]>([]);
 
   const activeType = watch('type');
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/categories?type=${activeType}`,
-          { withCredentials: true }
-        );
-        setCategories(res.data.data);
-        if (!res.data.data.find((cat: OptionItem) => cat.id === watch('categoryId'))) {
+        const res = await CategoryService.getAllCategories();
+        setCategories(res.data as CategoryOptionItem[]);
+        if (!(res.data??[]).find((cat: CategoryOptionItem) => cat.id === watch('categoryId'))) {
           setValue('categoryId', '');
         }
       } catch (error) {
@@ -70,12 +77,9 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ initialData }) => {
 
     const fetchAccounts = async () => {
       try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/accounts/all`,
-          { withCredentials: true }
-        );
-        setAccounts(res.data.data);
-        if (!res.data.data.find((acc: OptionItem) => acc.id === watch('accountId'))) {
+        const res = await AccountService.getAllAccounts();
+        setAccounts(res.data as AccountOptionItem[]);
+        if (!(res.data??[]).find((acc: AccountOptionItem) => acc.id === watch('accountId'))) {
           setValue('accountId', '');
         }
       } catch (error) {
@@ -89,35 +93,21 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ initialData }) => {
 
   const onSubmit = async (data: FormData) => {
     try {
+      const payload = {
+      type: data.type as TransactionRequestDTO.type,
+      date: data.date,
+      time: toLocalTime(data.time),
+      amount: parseFloat(data.amount),
+      categoryId: data.categoryId,
+      accountId: data.accountId,
+      description: data.description,
+    };
       if (initialData?.id) {
-        await axios.put(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions/${initialData.id}`,
-          {
-            type: parseInt(data.type),
-            date: data.date,
-            time: data.time,
-            amount: parseFloat(data.amount),
-            categoryId: data.categoryId,
-            accountId: data.accountId,
-            description: data.description,
-          },
-          { withCredentials: true }
-        );
+        await TransactionsService.updateTransaction(initialData.id, payload);
         alert('✅ Transaction updated!');
       } else {
-        await axios.post(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions`,
-          {
-            type: parseInt(data.type),
-            date: data.date,
-            time: data.time,
-            amount: parseFloat(data.amount),
-            categoryId: data.categoryId,
-            accountId: data.accountId,
-            description: data.description,
-          },
-          { withCredentials: true }
-        );
+
+        await TransactionsService.createTransaction(payload);
         alert('✅ Transaction created!');
         reset();
       }
