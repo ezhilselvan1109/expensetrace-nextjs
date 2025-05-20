@@ -37,8 +37,7 @@ export default function SignInForm() {
         throw new Error(result.message || "Login failed");
       }
 
-      alert("Login successful!");
-      router.push("/"); // ✅ redirect after login
+      router.push("/dashboard"); // redirect after login
     } catch (error: unknown) {
       if (error instanceof Error) {
         alert(error.message || "Something went wrong.");

@@ -48,7 +48,7 @@ export default function LandingPage() {
 
           <div className="flex flex-col items-center gap-4 sm:flex-row justify-center">
             <Link
-              href="/dashboard"
+              href="/signin"
               className="inline-flex items-center gap-2 rounded-lg px-6 py-3 text-white hover:brightness-90 transition"
               style={{ backgroundColor: mainBlue }}
             >
@@ -152,7 +152,7 @@ export default function LandingPage() {
             Start using ExpenseTracer to build smarter money habits today.
           </p>
           <Link
-            href="/dashboard"
+            href="/signin"
             className="inline-flex items-center gap-2 rounded-lg px-6 py-3 font-semibold hover:bg-gray-100 transition"
             style={{ backgroundColor: "white", color: mainBlue }}
           >
