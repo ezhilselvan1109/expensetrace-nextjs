@@ -4,7 +4,7 @@ import { FEATURES, STEPS } from "@/lib/landing";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "ExpenseTracer – Personal Expense Tracker & Budget Manager",
+  title: "ExpenseTrace – Personal Expense Tracke & Budget Manager",
   description:
     "Track your personal expenses effortlessly with ExpenseTracer. Visualize spending trends, manage your budget, and gain control over your finances with our easy-to-use dashboard.",
   keywords: [
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     "financial planning",
     "expense tracking app",
     "budgeting tool",
-    "ExpenseTracer",
+    "ExpenseTrace",
   ],
   openGraph: {
     title: "ExpenseTracer – Personal Expense Tracker",
@@ -49,7 +49,7 @@ export default function LandingPage() {
       {/* ───── Header ───── */}
       <nav className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
         <Link href="/" className="text-xl font-bold text-blue-600 dark:text-blue-300">
-          ExpenseTracer
+          ExpenseTrace
         </Link>
       </nav>
 
@@ -185,7 +185,7 @@ export default function LandingPage() {
 
       {/* ───── Footer ───── */}
       <footer className="border-t bg-gray-50 dark:bg-gray-900 py-12 text-center text-sm text-gray-500 dark:text-gray-400">
-        © {new Date().getFullYear()} ExpenseTracer. All rights reserved.
+        © {new Date().getFullYear()} ExpenseTrace. All rights reserved.
       </footer>
     </>
   );
