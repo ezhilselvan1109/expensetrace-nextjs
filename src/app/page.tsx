@@ -79,7 +79,7 @@ export default function LandingPage() {
                 className="inline-flex items-center gap-2 rounded-lg px-6 py-3 text-white hover:brightness-90 transition"
                 style={{ backgroundColor: mainBlue }}
               >
-                Start Tracking
+                Get Started Free
                 <ArrowRight className="h-4 w-4" />
               </Link>
 
@@ -176,7 +176,7 @@ export default function LandingPage() {
               className="inline-flex items-center gap-2 rounded-lg px-6 py-3 font-semibold hover:bg-gray-100 transition"
               style={{ backgroundColor: "white", color: mainBlue }}
             >
-              Start Now
+              Start Now Free
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

@@ -3,42 +3,44 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApiResponse } from '../models/ApiResponse';
-import type { TransactionRequestDTO } from '../models/TransactionRequestDTO';
+import type { DebtRequestDto } from '../models/DebtRequestDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
-export class TransactionsService {
+export class DebtService {
     /**
-     * Get transaction by ID
+     * get debt
+     * get debt by id for the authenticated user
      * @param id
      * @returns ApiResponse OK
      * @throws ApiError
      */
-    public static getTransaction(
+    public static getDebt(
         id: string,
     ): CancelablePromise<ApiResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/transactions/{id}',
+            url: '/api/v1/debts/{id}',
             path: {
                 'id': id,
             },
         });
     }
     /**
-     * Update transaction
+     * update debt
+     * update debt for the authenticated user
      * @param id
      * @param requestBody
      * @returns ApiResponse OK
      * @throws ApiError
      */
-    public static updateTransaction(
+    public static updateDebt(
         id: string,
-        requestBody: TransactionRequestDTO,
+        requestBody: DebtRequestDto,
     ): CancelablePromise<ApiResponse> {
         return __request(OpenAPI, {
             method: 'PUT',
-            url: '/api/v1/transactions/{id}',
+            url: '/api/v1/debts/{id}',
             path: {
                 'id': id,
             },
@@ -47,78 +49,50 @@ export class TransactionsService {
         });
     }
     /**
-     * Delete transaction
+     * delete debt
+     * delete debt for the authenticated user
      * @param id
      * @returns ApiResponse OK
      * @throws ApiError
      */
-    public static deleteTransaction(
+    public static deleteDebt(
         id: string,
     ): CancelablePromise<ApiResponse> {
         return __request(OpenAPI, {
             method: 'DELETE',
-            url: '/api/v1/transactions/{id}',
+            url: '/api/v1/debts/{id}',
             path: {
                 'id': id,
             },
         });
     }
     /**
-     * Get all transactions with pagination
-     * @param page
-     * @param size
+     * get all debt
+     * get all debt for the authenticated user
      * @returns ApiResponse OK
      * @throws ApiError
      */
-    public static getAllTransactions(
-        page?: number,
-        size: number = 10,
-    ): CancelablePromise<ApiResponse> {
+    public static getAllDebt(): CancelablePromise<ApiResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/transactions',
-            query: {
-                'page': page,
-                'size': size,
-            },
+            url: '/api/v1/debts',
         });
     }
     /**
-     * Create a transaction
+     * Add a new debt
+     * Create a new debt for the authenticated user
      * @param requestBody
      * @returns ApiResponse OK
      * @throws ApiError
      */
-    public static createTransaction(
-        requestBody: TransactionRequestDTO,
+    public static addDebt(
+        requestBody: DebtRequestDto,
     ): CancelablePromise<ApiResponse> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/v1/transactions',
+            url: '/api/v1/debts',
             body: requestBody,
             mediaType: 'application/json',
-        });
-    }
-    /**
-     * Get all transactions
-     * @returns ApiResponse OK
-     * @throws ApiError
-     */
-    public static getAllTransactions1(): CancelablePromise<ApiResponse> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/v1/transactions/all',
-        });
-    }
-    /**
-     * Get all transaction by account ID
-     * @returns ApiResponse OK
-     * @throws ApiError
-     */
-    public static getAllTransactionByAccountId(): CancelablePromise<ApiResponse> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/v1/transactions/account/{id}',
         });
     }
 }
