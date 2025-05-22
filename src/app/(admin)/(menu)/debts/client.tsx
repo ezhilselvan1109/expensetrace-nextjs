@@ -19,7 +19,7 @@ export default function DebtsPage() {
     setLoading(true);
     try {
       const res = await DebtService.getAllDebt();
-      setDebts(res.data);
+      setDebts((res.data as Debt[]) || []);
     } finally {
       setLoading(false);
     }
