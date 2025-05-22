@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import React from "react";
-import DebtsPage from "./client";
+import DebtTransactionsPage from "./client";
 
 export const metadata: Metadata = {
   title: "Debts | ExpenseTrace",
@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 
 export default function DebtPage() {
   return (
-      <div className="min-h-screen px-2 py-3 dark:border-gray-800 xl:px-10 xl:py-12">
-        <DebtsPage/>
-      </div>
+    <div className="min-h-screen px-2 py-3 dark:border-gray-800 xl:px-10 xl:py-12">
+      <DebtTransactionsPage/>
+    </div>
   );
 }

@@ -9,8 +9,8 @@ import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
 export class UserService {
     /**
-     * Update an existing user
-     * Updates user information for the specified ID with the provided details.
+     * Update user
+     * Updates existing user info by ID.
      * @param id
      * @param requestBody
      * @returns ApiResponse OK
@@ -32,7 +32,7 @@ export class UserService {
     }
     /**
      * Create a new user
-     * Adds a new user to the system. Throws an error if the user already exists.
+     * Adds a new user. Throws error if email already exists.
      * @param requestBody
      * @returns ApiResponse OK
      * @throws ApiError
@@ -48,26 +48,20 @@ export class UserService {
         });
     }
     /**
-     * Retrieve a user by ID
-     * Fetches a user from the database using the provided user ID.
-     * @param id
+     * Get current user
+     * Returns user details from JWT token context.
      * @returns ApiResponse OK
      * @throws ApiError
      */
-    public static getUserById(
-        id: string,
-    ): CancelablePromise<ApiResponse> {
+    public static getUserById(): CancelablePromise<ApiResponse> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/v1/users/user/{id}',
-            path: {
-                'id': id,
-            },
+            url: '/api/v1/users/me',
         });
     }
     /**
      * Delete a user by ID
-     * Removes a user from the system based on the provided user ID.
+     * Deletes user by ID.
      * @param id
      * @returns ApiResponse OK
      * @throws ApiError

@@ -10,7 +10,7 @@ import { request as __request } from '../core/request';
 export class AuthService {
     /**
      * User logout
-     * Logs out the current user by clearing the JWT cookie.
+     * Clears JWT cookie to log out the user.
      * @returns ApiResponse OK
      * @throws ApiError
      */
@@ -22,7 +22,7 @@ export class AuthService {
     }
     /**
      * User login
-     * Authenticates the user with email and password, and sets a JWT in an HTTP-only cookie upon successful login.
+     * Authenticates user and sets JWT in HttpOnly cookie.
      * @param requestBody
      * @returns ApiResponse OK
      * @throws ApiError

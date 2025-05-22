@@ -16,8 +16,16 @@
       "description": "Endpoints for managing users"
     },
     {
+      "name": "Debt",
+      "description": "manage debts"
+    },
+    {
       "name": "Transactions",
       "description": "Endpoints for managing transactions"
+    },
+    {
+      "name": "Debt Transactions",
+      "description": "manage debts Transactions"
     },
     {
       "name": "Account",
@@ -46,8 +54,8 @@
         "tags": [
           "User"
         ],
-        "summary": "Update an existing user",
-        "description": "Updates user information for the specified ID with the provided details.",
+        "summary": "Update user",
+        "description": "Updates existing user info by ID.",
         "operationId": "updateUser",
         "parameters": [
           {
@@ -215,6 +223,216 @@
           },
           "required": true
         },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/debts/{id}": {
+      "get": {
+        "tags": [
+          "Debt"
+        ],
+        "summary": "get debt",
+        "description": "get debt by id for the authenticated user",
+        "operationId": "getDebt",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Debt"
+        ],
+        "summary": "update debt",
+        "description": "update debt for the authenticated user",
+        "operationId": "updateDebt",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DebtRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Debt"
+        ],
+        "summary": "delete debt",
+        "description": "delete debt for the authenticated user",
+        "operationId": "deleteDebt",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/debts-transactions/{id}": {
+      "get": {
+        "tags": [
+          "Debt Transactions"
+        ],
+        "summary": "get debt Transaction",
+        "description": "get debt Transaction by id for the authenticated user",
+        "operationId": "getDebtTransaction",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Debt Transactions"
+        ],
+        "summary": "update debt Transaction",
+        "description": "update debt Transaction for the authenticated user",
+        "operationId": "updateDebtTransaction",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DebtTransactionRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Debt Transactions"
+        ],
+        "summary": "delete debt Transaction",
+        "description": "delete debt Transaction for the authenticated user",
+        "operationId": "deleteDebtTransaction",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -545,7 +763,7 @@
           "User"
         ],
         "summary": "Create a new user",
-        "description": "Adds a new user to the system. Throws an error if the user already exists.",
+        "description": "Adds a new user. Throws error if email already exists.",
         "operationId": "addUser",
         "requestBody": {
           "content": {
@@ -675,6 +893,101 @@
         }
       }
     },
+    "/api/v1/debts": {
+      "get": {
+        "tags": [
+          "Debt"
+        ],
+        "summary": "get all debt",
+        "description": "get all debt for the authenticated user",
+        "operationId": "getAllDebt",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Debt"
+        ],
+        "summary": "Add a new debt",
+        "description": "Create a new debt for the authenticated user",
+        "operationId": "addDebt",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DebtRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/debts-transactions/{debtId}": {
+      "post": {
+        "tags": [
+          "Debt Transactions"
+        ],
+        "summary": "Add a new debt Transaction",
+        "description": "Create a new debt Transaction for the authenticated user",
+        "operationId": "addDebtTransaction",
+        "parameters": [
+          {
+            "name": "debtId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DebtTransactionRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/categories": {
       "get": {
         "tags": [
@@ -733,7 +1046,7 @@
           "Auth"
         ],
         "summary": "User logout",
-        "description": "Logs out the current user by clearing the JWT cookie.",
+        "description": "Clears JWT cookie to log out the user.",
         "operationId": "logout",
         "responses": {
           "200": {
@@ -755,7 +1068,7 @@
           "Auth"
         ],
         "summary": "User login",
-        "description": "Authenticates the user with email and password, and sets a JWT in an HTTP-only cookie upon successful login.",
+        "description": "Authenticates user and sets JWT in HttpOnly cookie.",
         "operationId": "login",
         "requestBody": {
           "content": {
@@ -960,56 +1273,14 @@
         }
       }
     },
-    "/api/v1/users/user/{id}": {
+    "/api/v1/users/me": {
       "get": {
         "tags": [
           "User"
         ],
-        "summary": "Retrieve a user by ID",
-        "description": "Fetches a user from the database using the provided user ID.",
+        "summary": "Get current user",
+        "description": "Returns user details from JWT token context.",
         "operationId": "getUserById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/transactions/summary": {
-      "get": {
-        "tags": [
-          "Transactions"
-        ],
-        "summary": "transaction summary",
-        "operationId": "getSummary",
-        "parameters": [
-          {
-            "name": "dto",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/TransactionRequestDTO"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1108,6 +1379,39 @@
         "summary": "Get all tags for the authenticated user",
         "description": "Returns a list of all tags created by the currently authenticated user.",
         "operationId": "getAllTagsByUser",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/debts-transactions/id/{debtId}": {
+      "get": {
+        "tags": [
+          "Debt Transactions"
+        ],
+        "summary": "get all debt Transaction",
+        "description": "get all debt Transaction for the authenticated user",
+        "operationId": "getAllDebtTransaction",
+        "parameters": [
+          {
+            "name": "debtId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1428,26 +1732,13 @@
         }
       }
     },
-    "/": {
-      "get": {
-        "tags": [
-          "home-controller"
-        ],
-        "operationId": "redirectToSwagger",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/v1/users/user/{id}/delete": {
       "delete": {
         "tags": [
           "User"
         ],
         "summary": "Delete a user by ID",
-        "description": "Removes a user from the system based on the provided user ID.",
+        "description": "Deletes user by ID.",
         "operationId": "deleteUser",
         "parameters": [
           {
@@ -1646,6 +1937,60 @@
         "properties": {
           "name": {
             "type": "string"
+          }
+        }
+      },
+      "DebtRequestDto": {
+        "type": "object",
+        "properties": {
+          "personName": {
+            "type": "string"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "additionalDetail": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "description": "Debts Type: 1=LENDING, 2=BORROWING",
+            "enum": [
+              "1",
+              "2"
+            ]
+          }
+        }
+      },
+      "DebtTransactionRequestDto": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "time": {
+            "$ref": "#/components/schemas/LocalTime"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "description": "Debt Transaction Type: 1=PAID, 2=RECEIVED, 3=ADJUSTMENT",
+            "enum": [
+              "1",
+              "2",
+              "3"
+            ]
           }
         }
       },
