@@ -2,10 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { LocalTime } from './LocalTime';
 export type DebtTransactionRequestDto = {
     date?: string;
-    time?: LocalTime;
     amount?: number;
     description?: string;
     accountId?: string;

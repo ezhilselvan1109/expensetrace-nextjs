@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { DebtTransaction } from "../../../../../../types";
 import { DebtTransactionsService } from "@/api-client";
 import { ArrowDownCircle, ArrowUpCircle, Repeat } from "lucide-react";
+import Modal from "../(component)/modal";
 
 export default function DebtTransactionsPage() {
   const { id } = useParams();
@@ -14,12 +15,35 @@ export default function DebtTransactionsPage() {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'ALL' | 'PAID' | 'RECEIVED' | 'ADJUSTMENT'>('ALL');
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const buttons = [
+    {
+      label: "Money Received",
+      description: "Trace money you have received from someone",
+      icon: <ArrowDownCircle size={20} />,
+      bgColorClass: "bg-green-50 dark:bg-green-900/20",
+      textColorClass: "text-green-600",
+      iconColorClass: "bg-green-600 text-white",
+      hoverBgColorClass: "hover:bg-green-100 dark:hover:bg-green-800",
+      onClick: () => handleCreateTransaction(2),
+    },
+    {
+      label: "Money Paid",
+      description: "Trace money you have paid to someone",
+      icon: <ArrowUpCircle size={20} />,
+      bgColorClass: "bg-red-50 dark:bg-red-900/20",
+      iconColorClass: "bg-red-600 text-white",
+      textColorClass: "text-red-600",
+      hoverBgColorClass: "hover:bg-red-100 dark:hover:bg-red-800",
+      onClick: () => handleCreateTransaction(1),
+    },
+  ];
+
   useEffect(() => {
-  if (!id) return;
-
-  fetchTransactions();
-}, [id]);
-
+    if (!id) return;
+    fetchTransactions();
+  }, [id]);
 
   const fetchTransactions = async () => {
     setLoading(true);
@@ -34,9 +58,10 @@ export default function DebtTransactionsPage() {
     }
   };
 
+  // Changed icons and colors here:
   const renderIcon = (type: number) => {
-    if (type === 1) return <ArrowDownCircle className="text-green-600" size={18} />;
-    if (type === 2) return <ArrowUpCircle className="text-red-600" size={18} />;
+    if (type === 1) return <ArrowUpCircle className="text-red-600" size={18} />;      // PAID — now red up arrow
+    if (type === 2) return <ArrowDownCircle className="text-green-600" size={18} />;  // RECEIVED — now green down arrow
     return <Repeat className="text-blue-500" size={18} />;
   };
 
@@ -51,11 +76,26 @@ export default function DebtTransactionsPage() {
     return true;
   });
 
+  // Redirect to create transaction page with type query param
+  const handleCreateTransaction = (type: number) => {
+    setIsModalOpen(false);
+    if (!id) return;
+    router.push(`/debts/${id}/create?type=${type}`);
+  };
+
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-6">
-        Debt Transactions
-      </h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+          Debt Transactions
+        </h1>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Add Record
+        </button>
+      </div>
 
       {/* Tabs */}
       <div className="border-b border-gray-200 dark:border-neutral-700 mb-4">
@@ -159,6 +199,16 @@ export default function DebtTransactionsPage() {
             ))}
           </div>
         </>
+      )}
+
+      {isModalOpen && (
+        <Modal
+          title="Add Record"
+          description="Select what you want to trace:"
+          buttons={buttons}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
       )}
     </div>
   );

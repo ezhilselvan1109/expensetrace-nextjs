@@ -67,15 +67,23 @@ export class DebtService {
         });
     }
     /**
-     * get all debt
-     * get all debt for the authenticated user
+     * Get all transactions with pagination
+     * @param page
+     * @param size
      * @returns ApiResponse OK
      * @throws ApiError
      */
-    public static getAllDebt(): CancelablePromise<ApiResponse> {
+    public static getAllDebt(
+        page?: number,
+        size: number = 10,
+    ): CancelablePromise<ApiResponse> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/debts',
+            query: {
+                'page': page,
+                'size': size,
+            },
         });
     }
     /**
@@ -93,6 +101,18 @@ export class DebtService {
             url: '/api/v1/debts',
             body: requestBody,
             mediaType: 'application/json',
+        });
+    }
+    /**
+     * get all debt
+     * get all debt for the authenticated user
+     * @returns ApiResponse OK
+     * @throws ApiError
+     */
+    public static getAllDebt1(): CancelablePromise<ApiResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/debts/all',
         });
     }
 }
