@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { Debt, DebtsType } from "../../../../../types";
 import { DebtService } from "@/api-client";
 import DebtTable from "./(component)/debtTable";
+import { ArrowDownCircle, ArrowUpCircle } from "lucide-react";
+import Modal from "./(component)/modal";
 
 export default function DebtsPage() {
   const [debts, setDebts] = useState<Debt[]>([]);
@@ -12,6 +14,29 @@ export default function DebtsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+
+  const buttons = [
+    {
+      label: "Lend Money",
+      description: "Record money you have lent to someone",
+      icon: <ArrowUpCircle size={20} />,
+      bgColorClass: "bg-green-50 dark:bg-green-900/20",
+      textColorClass: "text-green-600",
+      iconColorClass: "bg-green-600 text-white",
+      hoverBgColorClass: "hover:bg-green-100 dark:hover:bg-green-800",
+      onClick: () => handleCreateDebt(DebtsType.LENDING),
+    },
+    {
+      label: "Borrow Money",
+      description: "Track money you owe to someone",
+      icon: <ArrowDownCircle size={20} />,
+      bgColorClass: "bg-red-50 dark:bg-red-900/20",
+      iconColorClass: "bg-red-600 text-white",
+      textColorClass: "text-red-600",
+      hoverBgColorClass: "hover:bg-red-100 dark:hover:bg-red-800",
+      onClick: () => handleCreateDebt(DebtsType.BORROWING),
+    },
+  ];
 
   const router = useRouter();
 
@@ -89,8 +114,8 @@ export default function DebtsPage() {
             key={index}
             onClick={() => setPage(index)}
             className={`px-3 py-1 rounded text-sm transition ${index === page
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+              ? "bg-blue-600 text-white"
+              : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
               }`}
           >
             {index + 1}
@@ -106,87 +131,14 @@ export default function DebtsPage() {
         </button>
       </div>
 
-      {/* Create Debt Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4 sm:px-6">
-          <div className="relative w-full max-w-sm sm:max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-6 sm:p-8">
-
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-              aria-label="Close modal"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5 sm:w-6 sm:h-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-
-            {/* Modal Content */}
-            <div className="text-start">
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Add Debt</h2>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
-                Select what you want to track:
-              </p>
-
-              <div className="flex flex-col gap-4">
-                <button
-                  onClick={() => handleCreateDebt(DebtsType.LENDING)}
-                  className="w-full flex text-start items-center gap-3 p-4 rounded-xl bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-800 transition"
-                >
-                  <div className="flex-shrink-0 p-2 rounded-full bg-green-600 text-white flex items-center justify-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-5 h-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <div className="text-green-800 dark:text-green-300 font-semibold">Lend Money</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                      Record money you have lent to someone
-                    </div>
-                  </div>
-                </button>
-
-                <button
-                  onClick={() => handleCreateDebt(DebtsType.BORROWING)}
-                  className="w-full flex text-start items-center gap-3 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-800 transition"
-                >
-                  <div className="flex-shrink-0 p-2 rounded-full bg-red-600 text-white flex items-center justify-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-5 h-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <div className="text-red-800 dark:text-red-300 font-semibold">Borrow Money</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                      Track money you owe to someone
-                    </div>
-                  </div>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Modal
+          title="Add Debt"
+          description="Select what you want to track:"
+          buttons={buttons}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
       )}
     </div>
   );
