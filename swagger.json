@@ -898,9 +898,30 @@
         "tags": [
           "Debt"
         ],
-        "summary": "get all debt",
-        "description": "get all debt for the authenticated user",
+        "summary": "Get all transactions with pagination",
         "operationId": "getAllDebt",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1379,6 +1400,28 @@
         "summary": "Get all tags for the authenticated user",
         "description": "Returns a list of all tags created by the currently authenticated user.",
         "operationId": "getAllTagsByUser",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/debts/all": {
+      "get": {
+        "tags": [
+          "Debt"
+        ],
+        "summary": "get all debt",
+        "description": "get all debt for the authenticated user",
+        "operationId": "getAllDebt_1",
         "responses": {
           "200": {
             "description": "OK",
@@ -1969,9 +2012,6 @@
           "date": {
             "type": "string",
             "format": "date"
-          },
-          "time": {
-            "$ref": "#/components/schemas/LocalTime"
           },
           "amount": {
             "type": "number"
