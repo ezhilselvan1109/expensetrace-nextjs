@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import ComponentCard from "@/components/common/ComponentCard";
 import Label from "@/components/form/Label";
 import Input from "@/components/form/input";
+import { TagService } from "@/api-client";
 
 type FormProps = {
     mode: "add" | "edit";
@@ -22,23 +23,15 @@ export default function Form({ mode, tag, onSuccess, onCancel }: FormProps) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("process.env.NEXT_PUBLIC_API_BASE_URL : "+process.env.NEXT_PUBLIC_API_BASE_URL)
-        const url =
-            mode === "add"
-                ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/tags/add`
-                : `${process.env.NEXT_PUBLIC_API_BASE_URL}/tags/tag/${tag?.id}/update`;
-
-        const res = await fetch(url, {
-            method: mode === "add" ? "POST" : "PUT",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ name }),
-        });
-
-        if (res.ok) {
+        try {
+            if (mode === "edit" && tag) {
+                await TagService.updateTag(String(tag?.id), { name });
+            } else {
+                await TagService.addTag({ name });
+            }
             onSuccess();
-        } else {
-            console.error("Failed to submit form");
+        } catch (error) {
+            console.error("Failed to submit form", error);
         }
     };
 
