@@ -95,4 +95,28 @@ export class CategoryService {
             mediaType: 'application/json',
         });
     }
+    /**
+     * Get all income categories
+     * Retrieves all income categories for the authenticated user
+     * @returns ApiResponse OK
+     * @throws ApiError
+     */
+    public static getAllIncomeCategories(): CancelablePromise<ApiResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/categories/income',
+        });
+    }
+    /**
+     * Get all expense categories
+     * Retrieves all expense categories for the authenticated user
+     * @returns ApiResponse OK
+     * @throws ApiError
+     */
+    public static getAllExpenseCategories(): CancelablePromise<ApiResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/categories/expense',
+        });
+    }
 }

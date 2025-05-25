@@ -6,6 +6,8 @@ import { EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Input from "../form/InputField";
+import { UserService } from "@/api-client";
+import toast from "react-hot-toast";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,25 +32,15 @@ export default function SignUpForm() {
       alert("You must agree to the Terms and Conditions and Privacy Policy.");
       return;
     }
-
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/users/add`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to sign up");
-      }
-
-      const data = await res.json();
-      console.log("Signup successful:", data);
-      alert("Signup successful!");
+      await UserService.addUser(formData);
       router.push("/signin");
-    } catch (error) {
-      console.error("Signup error:", error);
-      alert("Signup failed. Please try again.");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message || "signup failed");
+      } else {
+        toast.error("signup failed");
+      }
     }
   };
 
@@ -73,8 +65,8 @@ export default function SignUpForm() {
                 </Label>
                 <Input
                   type="text"
-                  id="firstname"
-                  name="fname"
+                  id="firstName"
+                  name="firstName"
                   placeholder="Enter your first name"
                   value={formData.firstName}
                   onChange={handleChange}
@@ -86,8 +78,8 @@ export default function SignUpForm() {
                 </Label>
                 <Input
                   type="text"
-                  id="lastname"
-                  name="lname"
+                  id="lastName"
+                  name="lastName"
                   placeholder="Enter your last name"
                   value={formData.lastName}
                   onChange={handleChange}

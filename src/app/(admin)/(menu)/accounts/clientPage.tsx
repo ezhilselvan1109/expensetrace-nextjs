@@ -1,16 +1,10 @@
 'use client';
 
+import { AccountService } from '@/api-client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-type AccountApiItem = {
-  id: string;
-  name: string;
-  currentBalance?: number;
-  currentAvailableLimit?: number;
-  totalCreditLimit?: number;
-  default?: boolean;
-};
+type AccountType = 'wallet' | 'bank' | 'creditCard' | 'cash';
 
 type Account = {
   id: string;
@@ -18,13 +12,6 @@ type Account = {
   balance: number;
   extra: string | null;
   default: boolean;
-};
-
-type AccountType = 'wallet' | 'bank' | 'creditCard' | 'cash';
-
-type ApiResponse = {
-  message: string;
-  data: AccountApiItem[];
 };
 
 const formatCurrency = (amount: number | null | undefined) =>
@@ -45,75 +32,61 @@ export default function ClientPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchAccounts = async () => {
       try {
-        const urls: Record<AccountType, string> = {
-          wallet: '/accounts/wallet',
-          bank: '/accounts/bank',
-          creditCard: '/accounts/credit-card',
-          cash: '/accounts/cash',
-        };
-
-        const responses = await Promise.all(
-          Object.entries(urls).map(async ([key, url]) => {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}`, {
-              method: 'GET',
-              credentials: 'include',
-            });
-
-            if (!res.ok) throw new Error(`Failed to fetch ${key}`);
-
-            const data: ApiResponse = await res.json();
-            return { key: key as AccountType, data: data.data };
-          })
-        );
-
-        const [availableRes, creditRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/accounts/available-amount`, {
-            credentials: 'include',
-          }),
-          fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/accounts/credit/available`, {
-            credentials: 'include',
-          }),
+        const [
+          walletRes,
+          bankRes,
+          creditRes,
+          cashRes,
+          availableRes,
+          creditUsedRes,
+        ] = await Promise.all([
+          AccountService.getAllWalletAccountsByUser(),
+          AccountService.getAllBankAccountsByUser(),
+          AccountService.getAllCreditCardAccountsByUser(),
+          AccountService.getAllCashAccountsByUser(),
+          AccountService.getAvailableAmount(),
+          AccountService.getCreditAvailable(),
         ]);
 
-        if (!availableRes.ok || !creditRes.ok) throw new Error('Failed to fetch totals');
+        setAvailableAmount(typeof availableRes.data === 'number' ? availableRes.data : null);
+        setCreditUsedAmount(typeof creditUsedRes.data === 'number' ? creditUsedRes.data : null);
 
-        const availableJson = await availableRes.json();
-        const creditJson = await creditRes.json();
-
-        setAvailableAmount(availableJson.data);
-        setCreditUsedAmount(creditJson.data);
-
-        const grouped: Record<AccountType, Account[]> = {
-          wallet: [],
-          bank: [],
-          creditCard: [],
-          cash: [],
+        type RawAccount = {
+          id: string;
+          name: string;
+          currentBalance?: number;
+          currentAvailableLimit?: number;
+          totalCreditLimit?: number;
+          default?: boolean;
         };
 
-        responses.forEach(({ key, data }) => {
-          grouped[key] = data.map((item: AccountApiItem): Account => ({
+        const transform = (data: RawAccount[]): Account[] =>
+          data.map((item) => ({
             id: item.id,
             name: item.name,
             balance: item.currentBalance ?? item.currentAvailableLimit ?? 0,
-            extra:
-              item.totalCreditLimit !== undefined
-                ? `Limit: ₹${item.totalCreditLimit.toLocaleString()}`
-                : null,
+            extra: item.totalCreditLimit
+              ? `Limit: ₹${item.totalCreditLimit.toLocaleString()}`
+              : null,
             default: item.default ?? false,
           }));
-        });
 
-        setAccountsByType(grouped);
+        setAccountsByType({
+          wallet: transform(Array.isArray(walletRes.data) ? walletRes.data : []),
+          bank: transform(Array.isArray(bankRes.data) ? bankRes.data : []),
+          creditCard: transform(Array.isArray(creditRes.data) ? creditRes.data : []),
+          cash: transform(Array.isArray(cashRes.data) ? cashRes.data : []),
+        });
       } catch (err) {
-        console.error('Error fetching accounts:', err);
+        console.error('Failed to load accounts:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
+    fetchAccounts();
   }, []);
 
   const sectionHeaders: Record<AccountType, string> = {
