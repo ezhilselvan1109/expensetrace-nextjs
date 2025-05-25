@@ -3,6 +3,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Form from "./form";
 import TableContent from "./table";
+import { TagService } from "@/api-client";
 
 export default function TagsClient() {
   const router = useRouter();
@@ -14,19 +15,24 @@ export default function TagsClient() {
   const [reloadFlag, setReloadFlag] = useState(false);
 
   useEffect(() => {
-    if (mode === "edit" && editId) {
-      fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/tags/tag/${editId}`, {
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.data) {
-            setEditTag(data.data);
+    async function fetchTag() {
+      try {
+        if (mode === "edit" && editId) {
+          const data = await TagService.getTagById(editId);
+          if (data && data.data && typeof data.data.id === "number" && typeof data.data.name === "string") {
+            setEditTag({ id: data.data.id, name: data.data.name });
+          } else {
+            setEditTag(null);
           }
-        });
-    } else {
-      setEditTag(null);
+        } else {
+          setEditTag(null);
+        }
+      } catch (error) {
+        console.error("Failed to fetch", error);
+        setEditTag(null);
+      }
     }
+    fetchTag();
   }, [mode, editId]);
 
   const handleSuccess = () => {
