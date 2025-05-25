@@ -3,16 +3,20 @@
 import React from "react";
 import { Debt } from "../../../../../../types";
 import { ArrowUpCircle, ArrowDownCircle } from "lucide-react";
+import Link from "next/link";
 
 export default function DebtTable({
   debts,
   loading,
   onClick,
+  activeTab,
 }: {
   debts: Debt[];
   loading?: boolean;
   onClick: (id: string) => void;
+  activeTab: "All" | "Lending" | "Borrowing";
 }) {
+
   const renderIcon = (type: number) => {
     return type === 1 ? (
       <ArrowUpCircle className="text-green-600" size={18} />
@@ -33,8 +37,32 @@ export default function DebtTable({
           ))}
         </div>
       ) : debts.length === 0 ? (
-        <div className="text-center text-gray-500 dark:text-gray-400 py-12 text-lg">
-          No debts found.
+        <div className="text-center text-gray-500 dark:text-gray-400 py-12 text-lg max-w-md mx-auto space-y-2">
+          {activeTab === "All" ? (
+            <>
+              <p className="font-semibold text-xl">Track your debts effortlessly</p>
+              <p>
+                Managing money lent or borrowed has never been easier. Keep track of who owes you or what you owe, all in one place.{" "}
+                <Link href="/debts/help" className="text-blue-600 hover:underline">Learn more</Link>
+              </p>
+            </>
+          ) : activeTab === "Lending" ? (
+            <>
+              <p className="font-semibold text-xl">No lending activity yet</p>
+              <p>
+                You haven&#39;t lent any money yet. Once you do, you can track it here to stay on top of your repayments.{" "}
+                <Link href="/debts/help" className="text-blue-600 hover:underline">Learn more</Link>
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="font-semibold text-xl">No borrowing activity yet</p>
+              <p>
+                You haven&#39;t borrowed any money yet. Once you do, you can track it here to stay on top of your repayments.{" "}
+                <Link href="/debts/help" className="text-blue-600 hover:underline">Learn more</Link>
+              </p>
+            </>
+          )}
         </div>
       ) : (
         <>

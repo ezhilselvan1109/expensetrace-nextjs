@@ -4,8 +4,9 @@ import { useRouter } from "next/navigation";
 import { Debt, DebtsType } from "../../../../../types";
 import { DebtService } from "@/api-client";
 import DebtTable from "./(component)/debtTable";
-import { ArrowDownCircle, ArrowUpCircle } from "lucide-react";
+import { ArrowDownCircle, ArrowUpCircle, HelpCircle } from "lucide-react";
 import Modal from "./(component)/modal";
+import Link from "next/link";
 
 export default function DebtsPage() {
   const [debts, setDebts] = useState<Debt[]>([]);
@@ -72,7 +73,12 @@ export default function DebtsPage() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Debts</h1>
+        <div className="flex items-center space-x-2">
+          <h1 className="text-2xl font-bold">Debts</h1>
+          <Link href="/debts/help" className="text-blue-600 hover:text-blue-800">
+            <HelpCircle size={20} />
+          </Link>
+        </div>
         <button
           className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
           onClick={() => setIsModalOpen(true)}
@@ -96,7 +102,7 @@ export default function DebtsPage() {
         ))}
       </div>
 
-      <DebtTable debts={debtsToShow} loading={loading} onClick={id => router.push(`/debts/${id}`)} />
+      <DebtTable activeTab={activeTab} debts={debtsToShow} loading={loading} onClick={id => router.push(`/debts/${id}`)} />
 
       {/* Pagination Controls */}
       {/* Numbered Pagination Controls */}
