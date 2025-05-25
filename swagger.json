@@ -898,7 +898,7 @@
         "tags": [
           "Debt"
         ],
-        "summary": "Get all transactions with pagination",
+        "summary": "Get all debts with pagination",
         "operationId": "getAllDebt",
         "parameters": [
           {
@@ -1316,6 +1316,130 @@
         }
       }
     },
+    "/api/v1/transactions/search": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Search transactions with filters",
+        "operationId": "searchTransactions",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Transaction Type: 1=INCOME, 2=EXPENSE, 3=TRANSFER",
+              "enum": [
+                "1",
+                "2",
+                "3"
+              ]
+            }
+          },
+          {
+            "name": "accountId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "tagId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "minAmount",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "maxAmount",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/transactions/all": {
       "get": {
         "tags": [
@@ -1414,6 +1538,92 @@
         }
       }
     },
+    "/api/v1/debts/lending": {
+      "get": {
+        "tags": [
+          "Debt"
+        ],
+        "summary": "Get all Lending debts with pagination",
+        "operationId": "getAllLendingDebt",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/debts/borrowing": {
+      "get": {
+        "tags": [
+          "Debt"
+        ],
+        "summary": "Get all Borrowing debts with pagination",
+        "operationId": "getAllBorrowingDebt",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/debts/all": {
       "get": {
         "tags": [
@@ -1455,6 +1665,50 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/categories/income": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Get all income categories",
+        "description": "Retrieves all income categories for the authenticated user",
+        "operationId": "getAllIncomeCategories",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/categories/expense": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Get all expense categories",
+        "description": "Retrieves all expense categories for the authenticated user",
+        "operationId": "getAllExpenseCategories",
         "responses": {
           "200": {
             "description": "OK",

@@ -67,7 +67,7 @@ export class DebtService {
         });
     }
     /**
-     * Get all transactions with pagination
+     * Get all debts with pagination
      * @param page
      * @param size
      * @returns ApiResponse OK
@@ -101,6 +101,46 @@ export class DebtService {
             url: '/api/v1/debts',
             body: requestBody,
             mediaType: 'application/json',
+        });
+    }
+    /**
+     * Get all Lending debts with pagination
+     * @param page
+     * @param size
+     * @returns ApiResponse OK
+     * @throws ApiError
+     */
+    public static getAllLendingDebt(
+        page?: number,
+        size: number = 10,
+    ): CancelablePromise<ApiResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/debts/lending',
+            query: {
+                'page': page,
+                'size': size,
+            },
+        });
+    }
+    /**
+     * Get all Borrowing debts with pagination
+     * @param page
+     * @param size
+     * @returns ApiResponse OK
+     * @throws ApiError
+     */
+    public static getAllBorrowingDebt(
+        page?: number,
+        size: number = 10,
+    ): CancelablePromise<ApiResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/debts/borrowing',
+            query: {
+                'page': page,
+                'size': size,
+            },
         });
     }
     /**
