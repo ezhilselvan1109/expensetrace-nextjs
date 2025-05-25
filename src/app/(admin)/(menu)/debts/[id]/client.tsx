@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { DebtTransaction } from "../../../../../../types";
-import { DebtTransactionsService } from "@/api-client";
-import { ArrowDownCircle, ArrowUpCircle, Repeat } from "lucide-react";
+import { DebtService, DebtTransactionsService } from "@/api-client";
+import { ArrowDownCircle, ArrowUpCircle, Pencil, PlusCircle, Repeat, Trash2 } from "lucide-react";
 import Modal from "../(component)/modal";
 
 export default function DebtTransactionsPage() {
@@ -16,6 +16,7 @@ export default function DebtTransactionsPage() {
   const [activeTab, setActiveTab] = useState<'ALL' | 'PAID' | 'RECEIVED' | 'ADJUSTMENT'>('ALL');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const buttons = [
     {
@@ -83,19 +84,56 @@ export default function DebtTransactionsPage() {
     router.push(`/debts/${id}/create?type=${type}`);
   };
 
+  const confirmDelete = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteDebt = async () => {
+    if (!id) return;
+    try {
+      await DebtService.deleteDebt(id as string);
+      alert("Debt deleted successfully.");
+      router.push("/debts");
+    } catch (error) {
+      console.error("Failed to delete debt", error);
+      alert("Failed to delete debt. Please try again.");
+    } finally {
+      setIsDeleteModalOpen(false);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-wrap justify-between items-center gap-2 mb-6">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
           Debt Transactions
         </h1>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Add Record
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => router.push(`/debts/update?id=${id}`)}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600"
+          >
+            <Pencil size={16} />
+            Edit Debt
+          </button>
+          <button
+            onClick={confirmDelete}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            <Trash2 size={16} />
+            Delete Debt
+          </button>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            <PlusCircle size={16} />
+            Add Record
+          </button>
+        </div>
       </div>
+
+
 
       {/* Tabs */}
       <div className="border-b border-gray-200 dark:border-neutral-700 mb-4">
@@ -208,6 +246,38 @@ export default function DebtTransactionsPage() {
           buttons={buttons}
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
+        />
+      )}
+
+
+      {isDeleteModalOpen && (
+        <Modal
+          title="Delete Debt"
+          description="Are you sure you want to delete this debt? This action cannot be undone."
+          buttons={[
+            {
+              label: "Yes, Delete",
+              description: "This will permanently remove the debt",
+              icon: <Trash2 size={20} />,
+              bgColorClass: "bg-red-50 dark:bg-red-900/20",
+              iconColorClass: "bg-red-600 text-white",
+              textColorClass: "text-red-600",
+              hoverBgColorClass: "hover:bg-red-100 dark:hover:bg-red-800",
+              onClick: handleDeleteDebt,
+            },
+            {
+              label: "Cancel",
+              description: "Go back without deleting",
+              icon: <Repeat size={20} />,
+              bgColorClass: "bg-gray-50 dark:bg-gray-800",
+              iconColorClass: "bg-gray-400 text-white",
+              textColorClass: "text-gray-700 dark:text-gray-200",
+              hoverBgColorClass: "hover:bg-gray-100 dark:hover:bg-gray-700",
+              onClick: () => setIsDeleteModalOpen(false),
+            },
+          ]}
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
         />
       )}
     </div>
