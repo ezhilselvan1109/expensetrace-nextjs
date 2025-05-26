@@ -67,6 +67,42 @@ export class CategoryService {
         });
     }
     /**
+     * Set default income category
+     * Update default income category for the authenticated user
+     * @param id
+     * @returns ApiResponse OK
+     * @throws ApiError
+     */
+    public static updateDefaultIncomeCategory(
+        id: string,
+    ): CancelablePromise<ApiResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/categories/{id}/income-default',
+            path: {
+                'id': id,
+            },
+        });
+    }
+    /**
+     * Set default expense category
+     * Update default expense category for the authenticated user
+     * @param id
+     * @returns ApiResponse OK
+     * @throws ApiError
+     */
+    public static updateDefaultExpenseCategory(
+        id: string,
+    ): CancelablePromise<ApiResponse> {
+        return __request(OpenAPI, {
+            method: 'PUT',
+            url: '/api/v1/categories/{id}/expense-default',
+            path: {
+                'id': id,
+            },
+        });
+    }
+    /**
      * Get all categories
      * Retrieves all categories for the authenticated user
      * @returns ApiResponse OK
@@ -108,6 +144,18 @@ export class CategoryService {
         });
     }
     /**
+     * Get default income category
+     * Retrieve the default income category for the authenticated user
+     * @returns ApiResponse OK
+     * @throws ApiError
+     */
+    public static getDefaultIncomeCategory(): CancelablePromise<ApiResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/categories/income-default',
+        });
+    }
+    /**
      * Get all expense categories
      * Retrieves all expense categories for the authenticated user
      * @returns ApiResponse OK
@@ -117,6 +165,18 @@ export class CategoryService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/categories/expense',
+        });
+    }
+    /**
+     * Get default expense category
+     * Retrieve the default expense category for the authenticated user
+     * @returns ApiResponse OK
+     * @throws ApiError
+     */
+    public static getDefaultExpenseCategory(): CancelablePromise<ApiResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/categories/expense-default',
         });
     }
 }

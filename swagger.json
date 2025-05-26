@@ -552,6 +552,72 @@
         }
       }
     },
+    "/api/v1/categories/{id}/income-default": {
+      "put": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Set default income category",
+        "description": "Update default income category for the authenticated user",
+        "operationId": "updateDefaultIncomeCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/categories/{id}/expense-default": {
+      "put": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Set default expense category",
+        "description": "Update default expense category for the authenticated user",
+        "operationId": "updateDefaultExpenseCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/accounts/{id}/default-payment-mode": {
       "put": {
         "tags": [
@@ -1701,6 +1767,28 @@
         }
       }
     },
+    "/api/v1/categories/income-default": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Get default income category",
+        "description": "Retrieve the default income category for the authenticated user",
+        "operationId": "getDefaultIncomeCategory",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/categories/expense": {
       "get": {
         "tags": [
@@ -1709,6 +1797,28 @@
         "summary": "Get all expense categories",
         "description": "Retrieves all expense categories for the authenticated user",
         "operationId": "getAllExpenseCategories",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/categories/expense-default": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "summary": "Get default expense category",
+        "description": "Retrieve the default expense category for the authenticated user",
+        "operationId": "getDefaultExpenseCategory",
         "responses": {
           "200": {
             "description": "OK",

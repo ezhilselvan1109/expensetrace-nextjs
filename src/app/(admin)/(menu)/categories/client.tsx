@@ -68,6 +68,15 @@ const fetchCategories = async (tab: TabType): Promise<Category[]> => {
   return response.data as Category[];
 };
 
+const fetchDefaultCategorie = async (tab: TabType): Promise<Category> => {
+  const response =
+    tab === 'Expense'
+      ? await CategoryService.getDefaultExpenseCategory()
+      : await CategoryService.getDefaultIncomeCategory();
+
+  return response.data as Category;
+};
+
 export default function CategoryList() {
   const [activeTab, setActiveTab] = useState<TabType>('Expense');
 
@@ -76,6 +85,12 @@ export default function CategoryList() {
     isLoading,
     error,
   } = useSWR(['categories', activeTab], () => fetchCategories(activeTab));
+
+  const {
+    data: defaultCategorie,
+    isLoading: defaultIsLoading,
+    error: defaultError,
+  } = useSWR(['defaultCategorie', activeTab], () => fetchDefaultCategorie(activeTab));
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -104,6 +119,22 @@ export default function CategoryList() {
               {tab}
             </button>
           ))}
+        </div>
+
+        <div className='pb-4'>
+          {defaultIsLoading ? (
+            <div className="h-26 pb-2 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse" />
+          ) : defaultError ? (
+            <p className="text-center text-sm text-red-500">Failed to load default categorie</p>
+          ) : (
+            <div className="flex flex-row justify-between items-center space-y-3 p-3 border rounded-lg shadow-sm">
+              <div>
+                <div>Default Category</div>
+                <span className="text-xs">{defaultCategorie?.name}</span>
+              </div>
+              <div className="text-sm font-medium">edit</div>
+            </div>
+          )}
         </div>
 
         {/* Category List */}
