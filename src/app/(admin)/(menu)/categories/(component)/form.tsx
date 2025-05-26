@@ -28,12 +28,12 @@ import { useRouter } from 'next/navigation';
 const tabs = ['Expense', 'Income'] as const;
 
 const colorOptions = [
-    { label: 'Red', value: '#EF4444' },
-    { label: 'Blue', value: '#3B82F6' },
-    { label: 'Green', value: '#10B981' },
-    { label: 'Yellow', value: '#F59E0B' },
-    { label: 'Purple', value: '#8B5CF6' },
-    { label: 'Gray', value: '#6B7280' },
+    { label: 'red', value: '#EF4444' },
+    { label: 'blue', value: '#3B82F6' },
+    { label: 'green', value: '#10B981' },
+    { label: 'yellow', value: '#F59E0B' },
+    { label: 'purple', value: '#8B5CF6' },
+    { label: 'ray', value: '#6B7280' },
 ];
 
 const lucideIcons = {
@@ -112,9 +112,9 @@ export default function CategoryForm() {
     };
 
     return (
-        <div className="max-w-lg mx-auto mt-10 px-4 text-gray-800 dark:text-gray-100">
+        <div className="max-w-lg mx-auto mt-3 px-2 text-gray-800 dark:text-gray-100">
             {/* Tabs */}
-            <div className="flex bg-gray-100 dark:bg-gray-800 rounded-full p-1 mb-6">
+            <div className="flex bg-gray-100 dark:bg-gray-800 rounded-full mb-6">
                 {tabs.map((tab) => (
                     <button
                         key={tab}
@@ -137,7 +137,7 @@ export default function CategoryForm() {
                 >
                     {getSelectedIcon()}
                 </div>
-                <div className="w-full">
+                <div>
                     <label
                         htmlFor="category-name"
                         className="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-200"
@@ -147,18 +147,17 @@ export default function CategoryForm() {
                     <input
                         type="text"
                         id="category-name"
-                        placeholder="Enter category name (e.g. Groceries)"
+                        placeholder="e.g. Groceries"
                         value={form.name}
                         onChange={(e) => handleFormChange('name', e.target.value)}
-                        className="w-full px-4 py-3 pr-10 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                        className="w-full pl-2 py-2 pr-10 rounded-xl bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none transition"
                     />
                 </div>
             </div>
 
             {/* Color Picker */}
-            {/* Color Picker */}
             <section className="mb-6">
-                <h4 className="text-left font-semibold mb-3 text-gray-700 dark:text-gray-300">Color</h4>
+                <h4 className="text-left font-semibold mb-3 text-gray-700 dark:text-gray-300">Category Color</h4>
                 <div className="flex flex-wrap gap-4">
                     {colorOptions.map(({ label, value }) => {
                         const isSelected = form.color === value;
@@ -166,7 +165,7 @@ export default function CategoryForm() {
                             <div key={value} className="relative group">
                                 <button
                                     onClick={() => handleFormChange('color', value)}
-                                    className={`w-10 h-10 rounded-full transition-all duration-200 border-4 ${isSelected
+                                    className={`w-7 h-7 rounded-full transition-all duration-200 border-4 ${isSelected
                                         ? 'ring-2 ring-offset-2 ring-blue-500 border-white dark:border-gray-800 scale-110 shadow-md'
                                         : 'border-transparent opacity-70 hover:opacity-100 hover:scale-105'
                                         }`}
@@ -185,7 +184,7 @@ export default function CategoryForm() {
 
             {/* Icon Picker */}
             <section className="mb-6">
-                <h4 className="text-left font-semibold mb-3 text-gray-700 dark:text-gray-300">Icon</h4>
+                <h4 className="text-left font-semibold mb-3 text-gray-700 dark:text-gray-300">Category Icon</h4>
                 {Object.entries(lucideIcons).map(([category, icons]) => (
                     <div key={category} className="mb-4">
                         <p className="text-left mb-2 capitalize text-sm text-gray-600 dark:text-gray-400">
@@ -196,7 +195,7 @@ export default function CategoryForm() {
                                 <button
                                     key={key}
                                     onClick={() => handleFormChange('icon', key)}
-                                    className={`rounded-xl p-2 border-2 transition ${form.icon === key
+                                    className={`rounded-full p-2 border-2 transition ${form.icon === key
                                         ? 'border-black dark:border-white scale-110 shadow'
                                         : 'border-transparent opacity-70 hover:opacity-100'
                                         }`}
@@ -235,7 +234,7 @@ export default function CategoryForm() {
                         />
                     </svg>
                 )}
-                {loading ? 'Submitting...' : `Add ${activeTab}`}
+                {loading ? 'Saving...' : `Save`}
             </button>
 
             {message && (

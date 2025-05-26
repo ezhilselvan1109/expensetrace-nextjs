@@ -82,25 +82,24 @@ export default function CategoryList() {
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Categories</h1>
         <Link
-          className="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl shadow transition"
           href="/categories/add"
         >
-          Create Category
+          + Add Category
         </Link>
       </div>
 
-      <div className="max-w-lg mx-auto mt-10 px-4 text-gray-800 dark:text-gray-100">
+      <div className="max-w-lg mx-auto mt-5 text-gray-800 dark:text-gray-100">
         {/* Tabs */}
         <div className="flex bg-gray-100 dark:bg-gray-800 rounded-full p-1 mb-6">
           {tabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`flex-1 py-2 rounded-full text-sm font-medium transition-all ${
-                activeTab === tab
+              className={`flex-1 py-2 rounded-full text-sm font-medium transition-all ${activeTab === tab
                   ? 'bg-white dark:bg-gray-900 shadow text-black dark:text-white'
                   : 'text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white'
-              }`}
+                }`}
             >
               {tab}
             </button>
@@ -109,7 +108,11 @@ export default function CategoryList() {
 
         {/* Category List */}
         {isLoading ? (
-          <p className="text-center text-sm">Loading {activeTab} categories...</p>
+          <div className="grid grid-cols-2 gap-4">
+              {[...Array(8)].map((_, i) => (
+                <div key={i} className="h-26 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse" />
+              ))}
+          </div>
         ) : error ? (
           <p className="text-center text-sm text-red-500">Failed to load categories</p>
         ) : (
@@ -119,14 +122,14 @@ export default function CategoryList() {
               return (
                 <div
                   key={category.id}
-                  className="flex items-center space-x-3 p-3 border rounded-lg shadow-sm"
+                  className="flex flex-col justify-center items-center space-y-3 p-3 border rounded-lg shadow-sm"
                 >
                   <div
                     className="p-2 rounded-full"
                     style={{ backgroundColor: category.color }}
                   >
                     {IconComponent ? (
-                      <IconComponent size={20} color="#fff" />
+                      <IconComponent size={40} color="#fff" />
                     ) : (
                       <span className="text-xs text-white">?</span>
                     )}
