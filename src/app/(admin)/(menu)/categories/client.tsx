@@ -89,7 +89,7 @@ export default function CategoryList() {
         </Link>
       </div>
 
-      <div className="max-w-lg mx-auto mt-10 px-4 text-gray-800 dark:text-gray-100">
+      <div className="max-w-lg mx-auto mt-5 text-gray-800 dark:text-gray-100">
         {/* Tabs */}
         <div className="flex bg-gray-100 dark:bg-gray-800 rounded-full p-1 mb-6">
           {tabs.map((tab) => (
@@ -119,14 +119,14 @@ export default function CategoryList() {
               return (
                 <div
                   key={category.id}
-                  className="flex items-center space-x-3 p-3 border rounded-lg shadow-sm"
+                  className="flex flex-col justify-center items-center space-y-3 p-3 border rounded-lg shadow-sm"
                 >
                   <div
                     className="p-2 rounded-full"
                     style={{ backgroundColor: category.color }}
                   >
                     {IconComponent ? (
-                      <IconComponent size={20} color="#fff" />
+                      <IconComponent size={40} color="#fff" />
                     ) : (
                       <span className="text-xs text-white">?</span>
                     )}
