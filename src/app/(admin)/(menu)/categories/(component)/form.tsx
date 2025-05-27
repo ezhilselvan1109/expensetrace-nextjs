@@ -247,11 +247,11 @@ export default function CategoryForm() {
             <section className="mb-6">
                 <h4 className="mb-3 font-semibold">Category Color</h4>
                 <div className="flex flex-wrap gap-4">
-                    {colorOptions.map(({ value }) => {
+                    {colorOptions.map(({ label,value }) => {
                         const isSelected = form.color === value;
                         return (
                             <button
-                                key={value}
+                                key={label}
                                 onClick={() => handleFormChange('color', value)}
                                 className={`w-7 h-7 rounded-full border-4 transition-all duration-200 ${isSelected
                                     ? 'ring-2 ring-offset-2 ring-blue-500 border-white dark:border-gray-800 scale-110 shadow-md'
