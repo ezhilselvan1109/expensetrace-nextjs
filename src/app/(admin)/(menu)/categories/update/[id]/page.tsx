@@ -1,9 +1,9 @@
 import { Metadata } from "next";
 import React from "react";
-import CategoryForm from "../(component)/form";
+import CategoryForm from "../../(component)/form";
 
 export const metadata: Metadata = {
-  title: "Categories Add | ExpenseTrace",
+  title: "Categories update | ExpenseTrace",
   description: "This is Categories Page ExpenseTrace",
 };
 
