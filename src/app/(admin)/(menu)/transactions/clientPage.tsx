@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import useSWR from 'swr';
 import { ArrowDownCircle, ArrowUpCircle, Repeat } from 'lucide-react';
 import { TransactionsService } from '@/api-client';
 
@@ -21,34 +22,21 @@ type PaginatedResponse = {
   totalElements: number;
 };
 
-export default function ClientPage() {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
-  const pageSize = 10;
+const pageSize = 10;
 
+const fetcher = async (page: number): Promise<PaginatedResponse> => {
+  const res = await TransactionsService.getAllTransactions(page, pageSize);
+  return res.data as unknown as PaginatedResponse;
+};
+
+export default function ClientPage() {
+  const [page, setPage] = useState(0);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      setLoading(true);
-      try {
-        const res = await TransactionsService.getAllTransactions(page, pageSize);
-        // res.data is of type ApiResponse, we assume it contains PaginatedResponse in data field
-        const paginatedData = res.data as unknown as PaginatedResponse;
+  const { data, error, isLoading } = useSWR(['transactions', page], () => fetcher(page));
 
-        setTransactions(paginatedData.content);
-        setTotalPages(paginatedData.totalPages);
-      } catch (error) {
-        console.error('Failed to fetch transactions:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTransactions();
-  }, [page]);
+  const transactions = data?.content || [];
+  const totalPages = data?.totalPages || 0;
 
   const renderIcon = (type: number) => {
     if (type === 1) return <ArrowDownCircle className="text-green-500" size={18} />;
@@ -80,11 +68,15 @@ export default function ClientPage() {
         </button>
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <div className="space-y-6">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="h-26 bg-gray-200 dark:bg-gray-700 rounded-2xl animate-pulse" />
           ))}
+        </div>
+      ) : error ? (
+        <div className="text-center text-red-500 py-12 text-lg">
+          Failed to load transactions.
         </div>
       ) : transactions.length === 0 ? (
         <div className="text-center text-gray-500 dark:text-gray-400 py-12 text-lg">
