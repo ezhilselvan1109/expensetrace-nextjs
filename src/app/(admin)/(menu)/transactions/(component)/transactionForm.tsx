@@ -93,10 +93,9 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ initialData }) => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const payload = {
+      const payload:TransactionRequestDTO = {
       type: data.type as TransactionRequestDTO.type,
       date: data.date,
-      time: toLocalTime(data.time),
       amount: parseFloat(data.amount),
       categoryId: data.categoryId,
       accountId: data.accountId,
