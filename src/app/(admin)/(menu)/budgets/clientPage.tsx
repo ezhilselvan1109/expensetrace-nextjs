@@ -11,7 +11,7 @@ export default function DebtsPage() {
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center space-x-2">
           <h1 className="text-2xl font-bold">Budgets</h1>
-          <Link href="/debts/help" className="text-blue-600 hover:text-blue-800">
+          <Link href="/budgets/help" className="text-blue-600 hover:text-blue-800">
             <HelpCircle size={20} />
           </Link>
         </div>
