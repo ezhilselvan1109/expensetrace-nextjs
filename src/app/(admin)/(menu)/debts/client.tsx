@@ -1,20 +1,25 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Debt, DebtsType } from "../../../../../types";
-import { DebtService } from "@/api-client";
+import { DebtsType } from "../../../../../types";
 import DebtTable from "./(component)/debtTable";
 import { ArrowDownCircle, ArrowUpCircle, HelpCircle } from "lucide-react";
 import Modal from "./(component)/modal";
 import Link from "next/link";
+import { useDebts } from "@/hooks/useDebts";
 
 export default function DebtsPage() {
-  const [debts, setDebts] = useState<Debt[]>([]);
-  const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"All" | "Lending" | "Borrowing">("All");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
+
+  const router = useRouter();
+  const { debts, totalPages, isLoading } = useDebts(activeTab, page);
+
+  const handleCreateDebt = (type: DebtsType) => {
+    setIsModalOpen(false);
+    router.push(`/debts/create?type=${type}`);
+  };
 
   const buttons = [
     {
@@ -39,39 +44,9 @@ export default function DebtsPage() {
     },
   ];
 
-  const router = useRouter();
-
-  useEffect(() => {
-    fetchDebts(page);
-  }, [page]);
-
-  const fetchDebts = async (pageNum: number) => {
-    setLoading(true);
-    try {
-      const res = await DebtService.getAllDebt(pageNum);
-      setDebts((res.data?.content as Debt[]) || []);
-      setTotalPages(res.data?.totalPages || 1);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const filtered = (type: DebtsType) => debts.filter(d => d.type === type);
-
-  const debtsToShow =
-    activeTab === "All"
-      ? debts
-      : activeTab === "Lending"
-        ? filtered(DebtsType.LENDING)
-        : filtered(DebtsType.BORROWING);
-
-  const handleCreateDebt = (type: DebtsType) => {
-    setIsModalOpen(false);
-    router.push(`/debts/create?type=${type}`);
-  };
-
   return (
     <div className="max-w-4xl mx-auto">
+      {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center space-x-2">
           <h1 className="text-2xl font-bold">Debts</h1>
@@ -87,6 +62,7 @@ export default function DebtsPage() {
         </button>
       </div>
 
+      {/* Tabs */}
       <div className="flex bg-gray-100 dark:bg-gray-800 rounded-full p-1 mb-6 max-w-md mx-auto">
         {["All", "Lending", "Borrowing"].map((tab) => (
           <button
@@ -102,10 +78,10 @@ export default function DebtsPage() {
         ))}
       </div>
 
-      <DebtTable activeTab={activeTab} debts={debtsToShow} loading={loading} onClick={id => router.push(`/debts/${id}`)} />
+      {/* Table */}
+      <DebtTable activeTab={activeTab} debts={debts} loading={isLoading} onClick={id => router.push(`/debts/${id}`)} />
 
-      {/* Pagination Controls */}
-      {/* Numbered Pagination Controls */}
+      {/* Pagination */}
       <div className="flex justify-center mt-6 space-x-2">
         <button
           disabled={page === 0}
@@ -137,6 +113,7 @@ export default function DebtsPage() {
         </button>
       </div>
 
+      {/* Modal */}
       {isModalOpen && (
         <Modal
           title="Add Debt"

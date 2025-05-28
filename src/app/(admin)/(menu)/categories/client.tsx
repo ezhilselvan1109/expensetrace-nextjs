@@ -5,26 +5,11 @@ import { useState } from 'react';
 import useSWR from 'swr';
 import { CategoryService } from '@/api-client';
 import {
-  BusFront,
-  Bike,
-  TrainFront,
-  CircleParking,
-  Fuel,
-  UtensilsCrossed,
-  Sandwich,
-  Wine,
-  Apple,
-  IceCreamCone,
-  Pizza,
-  Cake,
-  Shirt,
-  ShoppingCart,
-  ShoppingBag,
-  CirclePercent,
-  Film,
-  Clapperboard,
-  TvMinimalPlay,
+  BusFront, Bike, TrainFront, CircleParking, Fuel, UtensilsCrossed, Sandwich,
+  Wine, Apple, IceCreamCone, Pizza, Cake, Shirt, ShoppingCart, ShoppingBag,
+  CirclePercent, Film, Clapperboard, TvMinimalPlay
 } from 'lucide-react';
+import DefaultCategoryEditor from './defaultCategory';
 
 const tabs = ['Expense', 'Income'] as const;
 type TabType = (typeof tabs)[number];
@@ -64,7 +49,6 @@ const fetchCategories = async (tab: TabType): Promise<Category[]> => {
     tab === 'Expense'
       ? await CategoryService.getAllExpenseCategories()
       : await CategoryService.getAllIncomeCategories();
-
   return response.data as Category[];
 };
 
@@ -73,7 +57,6 @@ const fetchDefaultCategorie = async (tab: TabType): Promise<Category> => {
     tab === 'Expense'
       ? await CategoryService.getDefaultExpenseCategory()
       : await CategoryService.getDefaultIncomeCategory();
-
   return response.data as Category;
 };
 
@@ -114,28 +97,20 @@ export default function CategoryList() {
               className={`flex-1 py-2 rounded-full text-sm font-medium transition-all ${activeTab === tab
                 ? 'bg-white dark:bg-gray-900 shadow text-black dark:text-white'
                 : 'text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white'
-                }`}
+              }`}
             >
               {tab}
             </button>
           ))}
         </div>
 
-        <div className='pb-4'>
-          {defaultIsLoading ? (
-            <div className="h-26 pb-2 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse" />
-          ) : defaultError ? (
-            <p className="text-center text-sm text-red-500">Failed to load default categorie</p>
-          ) : (
-            <div className="flex flex-row justify-between items-center space-y-3 p-3 border rounded-lg shadow-sm">
-              <div>
-                <div>Default Category</div>
-                <span className="text-xs">{defaultCategorie?.name}</span>
-              </div>
-              <div className="text-sm font-medium">edit</div>
-            </div>
-          )}
-        </div>
+        {/* Default Category Editor */}
+        <DefaultCategoryEditor
+          defaultCategorie={defaultCategorie}
+          defaultIsLoading={defaultIsLoading}
+          defaultError={defaultError}
+          categories={categories || []}
+        />
 
         {/* Category List */}
         {isLoading ? (
@@ -153,7 +128,7 @@ export default function CategoryList() {
               return (
                 <Link href={`/categories/update/${category.id}`} key={category.id}>
                   <div className="flex flex-col justify-center items-center space-y-3 p-3 border rounded-lg shadow-sm">
-                    <div className="p-2 rounded-full" style={{ backgroundColor: category.color }} >
+                    <div className="p-2 rounded-full" style={{ backgroundColor: category.color }}>
                       {IconComponent ? (
                         <IconComponent size={40} color="#fff" />
                       ) : (

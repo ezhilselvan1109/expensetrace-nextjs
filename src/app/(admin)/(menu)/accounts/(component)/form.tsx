@@ -1,5 +1,7 @@
 'use client';
 
+import { AccountService } from '@/api-client';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const tabs = ['Bank Account', 'Wallet', 'Credit Card'];
@@ -15,6 +17,7 @@ const paymentTypeMap: Record<string, string> = {
 
 export default function Form() {
   const [activeTab, setActiveTab] = useState('Bank Account');
+  const router = useRouter();
   const [paymentModes, setPaymentModes] = useState([
     { id: Date.now(), name: '', type: 'UPI' },
   ]);
@@ -88,37 +91,29 @@ export default function Form() {
   };
 
   const handleSubmit = async () => {
-    setLoading(true);
-    setMessage('');
-    try {
-      const payload = buildPayload();
-      const endpoint = activeTab === 'Bank Account' ? 'bank' : activeTab === 'Wallet' ? 'wallet' : 'credit-card'
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/accounts/${endpoint}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: "include",
-        body: JSON.stringify(payload),
-      });
-
-      if (response.ok) {
-        await response.json();
-        setMessage('✅ Account added successfully');
-      } else {
-        const error = await response.text();
-        setMessage(`❌ Failed: ${error}`);
-      }
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setMessage(`❌ Error: ${err.message}`);
-      } else {
-        setMessage(`❌ An unexpected error occurred`);
-      }
-    } finally {
-      setLoading(false);
+  setLoading(true);
+  setMessage('');
+  try {
+    const payload = buildPayload();
+    if (activeTab === 'Bank Account') {
+      await AccountService.addBankAccount(payload);
+    } else if (activeTab === 'Wallet') {
+      await AccountService.addWallet(payload);
+    } else if (activeTab === 'Credit Card') {
+      await AccountService.addDebitCard(payload);
     }
-  };
+    setMessage('✅ Account added successfully');
+    router.push('/accounts/add')
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      setMessage(`❌ Error: ${err.message}`);
+    } else {
+      setMessage('❌ Error: Something went wrong');
+    }
+  } finally {
+    setLoading(false);
+  }
+};
 
   const PillInput = ({
     id,
