@@ -1,6 +1,6 @@
-import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import { Metadata } from "next";
 import React from "react";
+import ClientPage from "./clientPage";
 
 export const metadata: Metadata = {
   title: "Scheduled Txns | ExpenseTrace",
@@ -9,19 +9,8 @@ export const metadata: Metadata = {
 
 export default function ScheduledTxnsPage() {
   return (
-    <div>
-      <PageBreadcrumb pageTitle="Scheduled Txns" />
-      <div className="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">
-        <div className="mx-auto w-full max-w-[630px] text-center">
-          <h3 className="mb-4 font-semibold text-gray-800 text-theme-xl dark:text-white/90 sm:text-2xl">
-            Card Title Here
-          </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-            Start putting content on grids or panels, you can also use different
-            combinations of grids.Please check out the dashboard and other pages
-          </p>
-        </div>
+      <div className="min-h-screen px-2 py-3 dark:border-gray-800 xl:px-10 xl:py-12">
+        <ClientPage />
       </div>
-    </div>
-  );
+    );
 }
