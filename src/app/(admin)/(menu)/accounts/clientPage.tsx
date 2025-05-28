@@ -1,6 +1,8 @@
 'use client';
 
 import { AccountService } from '@/api-client';
+import { HelpCircle } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -98,8 +100,13 @@ export default function ClientPage() {
 
   return (
     <div className="min-h-screen sm:px-8 sm:py-10 bg-gray-50 dark:bg-gray-900">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Accounts</h1>
+      <div className="flex flex-row sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
+        <div className="flex items-center space-x-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">All Accounts</h1>
+          <Link href="/accounts/help" className="text-blue-600 hover:text-blue-800">
+            <HelpCircle size={20} />
+          </Link>
+        </div>
         <button
           onClick={() => router.push('/accounts/add')}
           className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2.5 rounded-xl shadow text-sm sm:text-base"
@@ -118,19 +125,19 @@ export default function ClientPage() {
         ) : (
           <>
             {/* Totals Section */}
-            <div className="mb-12 grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="p-6 rounded-2xl bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 shadow-sm hover:shadow-md">
+            <div className="mb-12 grid grid-cols-1 grid-cols-2 gap-6">
+              <div className="p-6 rounded-2xl border shadow-sm hover:shadow-md">
                 <div className="text-sm text-green-800 dark:text-green-200 font-medium mb-2">
-                  🧮 Total Available Balance
+                  Available Balance
                 </div>
                 <div className="text-3xl font-bold text-green-900 dark:text-green-100">
                   {formatCurrency(availableAmount)}
                 </div>
               </div>
 
-              <div className="p-6 rounded-2xl bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 shadow-sm hover:shadow-md">
+              <div className="p-6 rounded-2xl border shadow-sm hover:shadow-md">
                 <div className="text-sm text-red-800 dark:text-red-200 font-medium mb-2">
-                  💳 Credit Used
+                  Available Credit
                 </div>
                 <div className="text-3xl font-bold text-red-900 dark:text-red-100">
                   {formatCurrency(creditUsedAmount)}
@@ -149,7 +156,7 @@ export default function ClientPage() {
                     {accountsByType[type as AccountType].map((acc) => (
                       <li
                         key={acc.id}
-                        className="p-5 sm:p-6 rounded-2xl bg-gray-100 dark:bg-gray-700 shadow hover:shadow-md transition cursor-pointer"
+                        className="p-5 sm:p-6 rounded-2xl shadow hover:shadow-md transition cursor-pointer"
                       >
                         <div className="flex justify-between items-center">
                           <div className="text-base sm:text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
