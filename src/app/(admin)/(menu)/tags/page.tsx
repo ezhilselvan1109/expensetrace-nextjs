@@ -1,15 +1,16 @@
-import { Suspense } from "react";
-import TagsClient from "./TagsClient";
-import ComponentCard from "@/components/common/ComponentCard";
+import { Metadata } from "next";
+import React from "react";
+import ClientPage from "./clientPage";
+
+export const metadata: Metadata = {
+  title: "Tags | ExpenseTrace",
+  description: "This is Tags Page ExpenseTrace",
+};
 
 export default function TagsPage() {
   return (
-      <div className="space-y-6">
-      <ComponentCard title="Basic Table 1">
-        <Suspense fallback={<div>Loading...</div>}>
-          <TagsClient />
-        </Suspense>
-      </ComponentCard>
+    <div className="min-h-screen px-2 py-3 dark:border-gray-800 xl:px-10 xl:py-12">
+      <ClientPage/>
     </div>
   );
 }
