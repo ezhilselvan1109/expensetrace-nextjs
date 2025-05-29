@@ -5,6 +5,7 @@ import type { ApiResponse } from '@/api-client';
 import { HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import useSWR from 'swr';
 
 type AccountType = 'wallet' | 'bank' | 'creditCard' | 'cash';
@@ -16,6 +17,7 @@ type Account = {
   extra: string | null;
   default: boolean;
 };
+
 type RawAccount = {
   id: string;
   name: string;
@@ -25,7 +27,6 @@ type RawAccount = {
   default?: boolean;
 };
 
-// Fix: Specify a proper type for fetcher instead of 'any', and handle ApiResponse correctly.
 function fetcher<T>(fn: () => Promise<ApiResponse>): () => Promise<T | undefined> {
   return async () => {
     const res = await fn();
@@ -49,6 +50,7 @@ const formatCurrency = (amount: number | null | undefined) =>
 
 export default function ClientPage() {
   const router = useRouter();
+  const [showBalance, setShowBalance] = useState(true);
 
   const {
     data: wallet,
@@ -111,25 +113,55 @@ export default function ClientPage() {
         </button>
       </div>
 
+      <div className="flex flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <p className="text-sm text-gray-700 dark:text-gray-300">
+          Transactions based balance, actual may vary.
+        </p>
+        <label className="inline-flex items-center cursor-pointer">
+          <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+            Show Balance
+          </span>
+          <input
+            type="checkbox"
+            className="sr-only peer"
+            checked={showBalance}
+            onChange={() => setShowBalance(!showBalance)}
+          />
+          <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600" />
+        </label>
+      </div>
+
       <div className="mx-auto max-w-5xl sm:p-10 space-y-12">
 
         {/* Totals Section */}
         <div className="grid grid-cols-2 gap-6">
-          <div className="p-6 rounded-2xl border shadow-sm hover:shadow-md">
-            <div className="text-sm text-green-800 dark:text-green-200 font-medium mb-2">
+          <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 hover:shadow-md transition cursor-pointer">
+            <div className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-2">
               Available Balance
             </div>
-            <div className="text-3xl font-bold text-green-900 dark:text-green-100">
-              {loadingAvailable ? <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse" /> : formatCurrency(typeof availableAmount === 'number' ? availableAmount : Number(availableAmount ?? 0))}
+            <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+              {loadingAvailable ? (
+                <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse" />
+              ) : showBalance ? (
+                formatCurrency(typeof availableAmount === 'number' ? availableAmount : Number(availableAmount ?? 0))
+              ) : (
+                '•••••'
+              )}
             </div>
           </div>
 
-          <div className="p-6 rounded-2xl border shadow-sm hover:shadow-md">
-            <div className="text-sm text-red-800 dark:text-red-200 font-medium mb-2">
+          <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 hover:shadow-md transition cursor-pointer">
+            <div className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-2">
               Available Credit
             </div>
-            <div className="text-3xl font-bold text-red-900 dark:text-red-100">
-              {loadingCreditUsed ? <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse" /> : formatCurrency(typeof creditUsedAmount === 'number' ? creditUsedAmount : Number(creditUsedAmount ?? 0))}
+            <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+              {loadingCreditUsed ? (
+                <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse" />
+              ) : showBalance ? (
+                formatCurrency(typeof creditUsedAmount === 'number' ? creditUsedAmount : Number(creditUsedAmount ?? 0))
+              ) : (
+                '•••••'
+              )}
             </div>
           </div>
         </div>
@@ -162,7 +194,7 @@ export default function ClientPage() {
                   {accounts.map((acc) => (
                     <li
                       key={acc.id}
-                      className="p-5 sm:p-6 rounded-2xl shadow hover:shadow-md transition cursor-pointer"
+                      className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border border-gray-200 dark:border-gray-700 hover:shadow-md transition cursor-pointer"
                     >
                       <div className="flex justify-between items-center">
                         <div className="text-base sm:text-lg font-medium text-gray-900 dark:text-gray-100 flex items-center gap-2">
@@ -174,7 +206,7 @@ export default function ClientPage() {
                           )}
                         </div>
                         <div className="text-base font-semibold text-gray-700 dark:text-gray-300">
-                          {formatCurrency(acc.balance)}
+                          {showBalance ? formatCurrency(acc.balance) : '•••••'}
                         </div>
                       </div>
                       {acc.extra && (
