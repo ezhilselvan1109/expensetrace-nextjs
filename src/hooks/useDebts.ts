@@ -21,11 +21,11 @@ export function useDebts(type: "All" | "Lending" | "Borrowing", page: number) {
   const getKey = () => {
     switch (type) {
       case "Lending":
-        return [`/api/v1/debts/lending`, page];
+        return [`lending`, page];
       case "Borrowing":
-        return [`/api/v1/debts/borrowing`, page];
+        return [`borrowing`, page];
       default:
-        return [`/api/v1/debts`, page];
+        return [`debts`, page];
     }
   };
 
