@@ -12,8 +12,8 @@ import {
   Trash2,
 } from "lucide-react";
 import Modal from "../(component)/modal";
-import { useDebtTransactions } from "@/hooks/useDebtTransactions";
 import { DebtTransaction } from "@/types";
+import { useDebtTransactions } from "@/hooks/useDebtTransactions";
 
 export default function DebtTransactionsPage() {
   const { id } = useParams();
