@@ -1,20 +1,26 @@
 'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { DebtTransaction } from "../../../../../types";
-import { DebtService, DebtTransactionsService } from "@/api-client";
-import { ArrowDownCircle, ArrowUpCircle, Pencil, PlusCircle, Repeat, Trash2 } from "lucide-react";
+import { DebtService } from "@/api-client";
+import {
+  ArrowDownCircle,
+  ArrowUpCircle,
+  Pencil,
+  PlusCircle,
+  Repeat,
+  Trash2,
+} from "lucide-react";
 import Modal from "../(component)/modal";
+import { useDebtTransactions } from "@/hooks/useDebtTransactions";
 
 export default function DebtTransactionsPage() {
   const { id } = useParams();
   const router = useRouter();
 
-  const [transactions, setTransactions] = useState<DebtTransaction[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'ALL' | 'PAID' | 'RECEIVED' | 'ADJUSTMENT'>('ALL');
+  const { transactions, isLoading } = useDebtTransactions(id as string);
 
+  const [activeTab, setActiveTab] = useState<'ALL' | 'PAID' | 'RECEIVED' | 'ADJUSTMENT'>('ALL');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -41,28 +47,9 @@ export default function DebtTransactionsPage() {
     },
   ];
 
-  useEffect(() => {
-    if (!id) return;
-    fetchTransactions();
-  }, [id]);
-
-  const fetchTransactions = async () => {
-    setLoading(true);
-    try {
-      const res = await DebtTransactionsService.getAllDebtTransaction(id as string);
-      setTransactions((res.data as DebtTransaction[]) || []);
-    } catch (error) {
-      console.error("Failed to fetch transactions", error);
-      setTransactions([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Changed icons and colors here:
   const renderIcon = (type: number) => {
-    if (type === 1) return <ArrowUpCircle className="text-red-600" size={18} />;      // PAID — now red up arrow
-    if (type === 2) return <ArrowDownCircle className="text-green-600" size={18} />;  // RECEIVED — now green down arrow
+    if (type === 1) return <ArrowUpCircle className="text-red-600" size={18} />;
+    if (type === 2) return <ArrowDownCircle className="text-green-600" size={18} />;
     return <Repeat className="text-blue-500" size={18} />;
   };
 
@@ -77,7 +64,6 @@ export default function DebtTransactionsPage() {
     return true;
   });
 
-  // Redirect to create transaction page with type query param
   const handleCreateTransaction = (type: number) => {
     setIsModalOpen(false);
     if (!id) return;
@@ -133,15 +119,11 @@ export default function DebtTransactionsPage() {
         </div>
       </div>
 
-
-
       {/* Tabs */}
       <div className="border-b border-gray-200 dark:border-neutral-700 mb-4">
         <nav
           className="flex justify-center gap-4 flex-wrap"
-          aria-label="Tabs"
           role="tablist"
-          aria-orientation="horizontal"
         >
           {['ALL', 'PAID', 'RECEIVED', 'ADJUSTMENT'].map((value) => (
             <button
@@ -162,7 +144,7 @@ export default function DebtTransactionsPage() {
         </nav>
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <div className="space-y-6">
           {[...Array(4)].map((_, i) => (
             <div
@@ -239,6 +221,7 @@ export default function DebtTransactionsPage() {
         </>
       )}
 
+      {/* Add Record Modal */}
       {isModalOpen && (
         <Modal
           title="Add Record"
@@ -249,7 +232,7 @@ export default function DebtTransactionsPage() {
         />
       )}
 
-
+      {/* Delete Confirmation Modal */}
       {isDeleteModalOpen && (
         <Modal
           title="Delete Debt"
