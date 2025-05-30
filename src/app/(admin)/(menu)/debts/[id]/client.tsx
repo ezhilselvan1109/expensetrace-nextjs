@@ -1,23 +1,38 @@
 'use client';
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { DebtTransaction } from "../../../../../../types";
-import { DebtService, DebtTransactionsService } from "@/api-client";
-import { ArrowDownCircle, ArrowUpCircle, Pencil, PlusCircle, Repeat, Trash2 } from "lucide-react";
+import { DebtService } from "@/api-client";
+import {
+  ArrowDownCircle,
+  ArrowUpCircle,
+  Pencil,
+  PlusCircle,
+  Repeat,
+  Trash2,
+} from "lucide-react";
 import Modal from "../(component)/modal";
+import { DebtTransaction } from "@/types";
+import { useDebtTransactions } from "@/hooks/useDebtTransactions";
 
 export default function DebtTransactionsPage() {
   const { id } = useParams();
   const router = useRouter();
 
-  const [transactions, setTransactions] = useState<DebtTransaction[]>([]);
-  const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'ALL' | 'PAID' | 'RECEIVED' | 'ADJUSTMENT'>('ALL');
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  const [tabPage, setTabPage] = useState({
+    ALL: 0,
+    PAID: 0,
+    RECEIVED: 0,
+    ADJUSTMENT: 0
+  });
+
+  const page = tabPage[activeTab];
+  const { transactions, totalPages, isLoading } = useDebtTransactions(id as string, activeTab, page);
+  console.log("transactions : " + transactions)
   const buttons = [
     {
       label: "Money Received",
@@ -41,43 +56,16 @@ export default function DebtTransactionsPage() {
     },
   ];
 
-  useEffect(() => {
-    if (!id) return;
-    fetchTransactions();
-  }, [id]);
-
-  const fetchTransactions = async () => {
-    setLoading(true);
-    try {
-      const res = await DebtTransactionsService.getAllDebtTransaction(id as string);
-      setTransactions((res.data as DebtTransaction[]) || []);
-    } catch (error) {
-      console.error("Failed to fetch transactions", error);
-      setTransactions([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Changed icons and colors here:
   const renderIcon = (type: number) => {
-    if (type === 1) return <ArrowUpCircle className="text-red-600" size={18} />;      // PAID — now red up arrow
-    if (type === 2) return <ArrowDownCircle className="text-green-600" size={18} />;  // RECEIVED — now green down arrow
+    if (type === 1) return <ArrowUpCircle className="text-red-600" size={18} />;
+    if (type === 2) return <ArrowDownCircle className="text-green-600" size={18} />;
     return <Repeat className="text-blue-500" size={18} />;
   };
 
   const renderTypeText = (type: number) =>
-    type === 1 ? "PAID" : type === 2 ? "RECEIVED" : "ADJUSTMENT";
+    type === 1 ? "PAID" : type === 2 ? "RECEIVED" : type === 3 ? "ADJUSTMENT" : "ALL";
 
-  const filteredTransactions = transactions.filter((tx) => {
-    if (activeTab === 'ALL') return true;
-    if (activeTab === 'PAID') return tx.type === 1;
-    if (activeTab === 'RECEIVED') return tx.type === 2;
-    if (activeTab === 'ADJUSTMENT') return tx.type === 3;
-    return true;
-  });
 
-  // Redirect to create transaction page with type query param
   const handleCreateTransaction = (type: number) => {
     setIsModalOpen(false);
     if (!id) return;
@@ -133,15 +121,11 @@ export default function DebtTransactionsPage() {
         </div>
       </div>
 
-
-
       {/* Tabs */}
       <div className="border-b border-gray-200 dark:border-neutral-700 mb-4">
         <nav
           className="flex justify-center gap-4 flex-wrap"
-          aria-label="Tabs"
           role="tablist"
-          aria-orientation="horizontal"
         >
           {['ALL', 'PAID', 'RECEIVED', 'ADJUSTMENT'].map((value) => (
             <button
@@ -162,7 +146,7 @@ export default function DebtTransactionsPage() {
         </nav>
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <div className="space-y-6">
           {[...Array(4)].map((_, i) => (
             <div
@@ -171,7 +155,7 @@ export default function DebtTransactionsPage() {
             />
           ))}
         </div>
-      ) : filteredTransactions.length === 0 ? (
+      ) : transactions.length === 0 ? (
         <div className="text-center text-gray-500 dark:text-gray-400 py-12 text-lg">
           No transactions found.
         </div>
@@ -190,22 +174,22 @@ export default function DebtTransactionsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                {filteredTransactions.map((tx) => (
+                {transactions.map((transaction: DebtTransaction) => (
                   <tr
-                    key={tx.id}
+                    key={transaction.id}
                     className="hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer"
-                    onClick={() => router.push(`/debts/${id}/transactions/${tx.id}`)}
+                    onClick={() => router.push(`/debts/${id}/transactions/${transaction.id}`)}
                   >
-                    <td className="px-6 py-4 text-gray-800 dark:text-white">{tx.date || '-'}</td>
-                    <td className="px-6 py-4 text-gray-700 dark:text-gray-300">{tx.time || '-'}</td>
+                    <td className="px-6 py-4 text-gray-800 dark:text-white">{transaction.date || '-'}</td>
+                    <td className="px-6 py-4 text-gray-700 dark:text-gray-300">{transaction.time || '-'}</td>
                     <td className="px-6 py-4 flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                      {renderIcon(tx.type)}
-                      <span>{renderTypeText(tx.type)}</span>
+                      {renderIcon(transaction.type)}
+                      <span>{renderTypeText(transaction.type)}</span>
                     </td>
                     <td className="px-6 py-4 text-right font-semibold text-gray-800 dark:text-white">
-                      {typeof tx.amount === "number" ? `$${tx.amount.toFixed(2)}` : '-'}
+                      {typeof transaction.amount === "number" ? `$${transaction.amount.toFixed(2)}` : '-'}
                     </td>
-                    <td className="px-6 py-4 text-gray-700 dark:text-gray-300">{tx.description || '-'}</td>
+                    <td className="px-6 py-4 text-gray-700 dark:text-gray-300">{transaction.description || '-'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -214,31 +198,78 @@ export default function DebtTransactionsPage() {
 
           {/* Mobile Cards */}
           <div className="md:hidden space-y-4 mt-4">
-            {filteredTransactions.map((tx) => (
+            {transactions.map((transaction: DebtTransaction) => (
               <div
-                key={tx.id}
-                onClick={() => router.push(`/debts/${id}/transactions/${tx.id}`)}
+                key={transaction.id}
+                onClick={() => router.push(`/debts/${id}/transactions/${transaction.id}`)}
                 className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border border-gray-200 dark:border-gray-700 hover:shadow-md transition cursor-pointer"
               >
                 <div className="flex justify-between items-center mb-2">
                   <div className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
-                    {renderIcon(tx.type)}
-                    <span>{renderTypeText(tx.type)}</span>
+                    {renderIcon(transaction.type)}
+                    <span>{renderTypeText(transaction.type)}</span>
                   </div>
                   <div className="text-base font-bold text-gray-800 dark:text-white">
-                    {typeof tx.amount === "number" ? `$${tx.amount.toFixed(2)}` : '-'}
+                    {typeof transaction.amount === "number" ? `$${transaction.amount.toFixed(2)}` : '-'}
                   </div>
                 </div>
                 <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
-                  {tx.date || '-'} at {tx.time || '-'}
+                  {transaction.date || '-'} at {transaction.time || '-'}
                 </div>
-                <div className="text-sm text-gray-700 dark:text-gray-200">{tx.description || '-'}</div>
+                <div className="text-sm text-gray-700 dark:text-gray-200">{transaction.description || '-'}</div>
               </div>
             ))}
           </div>
         </>
       )}
 
+      {/* Pagination */}
+      <div className="flex justify-center mt-6 space-x-2">
+        <button
+          disabled={page === 0}
+          onClick={() =>
+            setTabPage((prev) => ({
+              ...prev,
+              [activeTab]: Math.max(0, prev[activeTab] - 1),
+            }))
+          }
+          className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 text-sm disabled:opacity-50"
+        >
+          Previous
+        </button>
+
+        {[...Array(totalPages)].map((_, index) => (
+          <button
+            key={index}
+            onClick={() =>
+              setTabPage((prev) => ({
+                ...prev,
+                [activeTab]: index,
+              }))
+            }
+            className={`px-3 py-1 rounded text-sm transition ${index === page
+              ? "bg-blue-600 text-white"
+              : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+              }`}
+          >
+            {index + 1}
+          </button>
+        ))}
+
+        <button
+          disabled={page + 1 >= totalPages}
+          onClick={() =>
+            setTabPage((prev) => ({
+              ...prev,
+              [activeTab]: prev[activeTab] + 1,
+            }))
+          }
+          className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 text-sm disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
+      {/* Add Record Modal */}
       {isModalOpen && (
         <Modal
           title="Add Record"
@@ -249,7 +280,7 @@ export default function DebtTransactionsPage() {
         />
       )}
 
-
+      {/* Delete Confirmation Modal */}
       {isDeleteModalOpen && (
         <Modal
           title="Delete Debt"

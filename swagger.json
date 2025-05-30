@@ -1712,14 +1712,14 @@
         }
       }
     },
-    "/api/v1/debts-transactions/id/{debtId}": {
+    "/api/v1/debts-transactions/{debtId}/paid": {
       "get": {
         "tags": [
           "Debt Transactions"
         ],
-        "summary": "get all debt Transaction",
-        "description": "get all debt Transaction for the authenticated user",
-        "operationId": "getAllDebtTransaction",
+        "summary": "get all paid debt Transaction",
+        "description": "get all paid debt Transaction for the authenticated user",
+        "operationId": "getAllPaidDebtTransactions",
         "parameters": [
           {
             "name": "debtId",
@@ -1728,6 +1728,218 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/debts-transactions/{debtId}/all": {
+      "get": {
+        "tags": [
+          "Debt Transactions"
+        ],
+        "summary": "get all debt Transaction with pagination",
+        "description": "get all debt Transaction with pagination for the authenticated user",
+        "operationId": "getAllDebtTransactions",
+        "parameters": [
+          {
+            "name": "debtId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/debts-transactions/{debtId}/adjustment": {
+      "get": {
+        "tags": [
+          "Debt Transactions"
+        ],
+        "summary": "get all adjustment debt Transaction",
+        "description": "get all adjustment debt Transaction for the authenticated user",
+        "operationId": "getAllAdjustmentDebtTransactions",
+        "parameters": [
+          {
+            "name": "debtId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/debts-transactions/id/{debtId}": {
+      "get": {
+        "tags": [
+          "Debt Transactions"
+        ],
+        "summary": "get all debt Transaction",
+        "description": "get all debt Transaction for the authenticated user",
+        "operationId": "getAllDebtTransactions_1",
+        "parameters": [
+          {
+            "name": "debtId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/debts-transactions/id/{debtId}/received": {
+      "get": {
+        "tags": [
+          "Debt Transactions"
+        ],
+        "summary": "get all received debt Transaction",
+        "description": "get all received debt Transaction for the authenticated user",
+        "operationId": "getAllReceivedDebtTransactions",
+        "parameters": [
+          {
+            "name": "debtId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
             }
           }
         ],

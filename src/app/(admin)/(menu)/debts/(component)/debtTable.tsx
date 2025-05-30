@@ -1,7 +1,7 @@
 'use client';
 
 import React from "react";
-import { Debt } from "../../../../../../types";
+import { Debt } from "../../../../../types";
 import { ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 import Link from "next/link";
 
