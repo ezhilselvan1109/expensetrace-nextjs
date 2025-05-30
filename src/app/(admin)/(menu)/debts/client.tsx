@@ -11,7 +11,13 @@ import { useDebts } from "@/hooks/useDebts";
 export default function DebtsPage() {
   const [activeTab, setActiveTab] = useState<"All" | "Lending" | "Borrowing">("All");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [page, setPage] = useState(0);
+  const [tabPage, setTabPage] = useState({
+    All: 0,
+    Lending: 0,
+    Borrowing: 0,
+  });
+
+  const page = tabPage[activeTab];
 
   const router = useRouter();
   const { debts, totalPages, isLoading } = useDebts(activeTab, page);
@@ -85,7 +91,12 @@ export default function DebtsPage() {
       <div className="flex justify-center mt-6 space-x-2">
         <button
           disabled={page === 0}
-          onClick={() => setPage(p => Math.max(0, p - 1))}
+          onClick={() =>
+            setTabPage((prev) => ({
+              ...prev,
+              [activeTab]: Math.max(0, prev[activeTab] - 1),
+            }))
+          }
           className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 text-sm disabled:opacity-50"
         >
           Previous
@@ -94,11 +105,17 @@ export default function DebtsPage() {
         {[...Array(totalPages)].map((_, index) => (
           <button
             key={index}
-            onClick={() => setPage(index)}
-            className={`px-3 py-1 rounded text-sm transition ${index === page
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-              }`}
+            onClick={() =>
+              setTabPage((prev) => ({
+                ...prev,
+                [activeTab]: index,
+              }))
+            }
+            className={`px-3 py-1 rounded text-sm transition ${
+              index === page
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+            }`}
           >
             {index + 1}
           </button>
@@ -106,7 +123,12 @@ export default function DebtsPage() {
 
         <button
           disabled={page + 1 >= totalPages}
-          onClick={() => setPage(p => p + 1)}
+          onClick={() =>
+            setTabPage((prev) => ({
+              ...prev,
+              [activeTab]: prev[activeTab] + 1,
+            }))
+          }
           className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 text-sm disabled:opacity-50"
         >
           Next
