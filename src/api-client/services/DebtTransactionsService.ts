@@ -89,13 +89,91 @@ export class DebtTransactionsService {
         });
     }
     /**
+     * get all paid debt Transaction
+     * get all paid debt Transaction for the authenticated user
+     * @param debtId
+     * @param page
+     * @param size
+     * @returns ApiResponse OK
+     * @throws ApiError
+     */
+    public static getAllPaidDebtTransactions(
+        debtId: string,
+        page?: number,
+        size: number = 10,
+    ): CancelablePromise<ApiResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/debts-transactions/{debtId}/paid',
+            path: {
+                'debtId': debtId,
+            },
+            query: {
+                'page': page,
+                'size': size,
+            },
+        });
+    }
+    /**
+     * get all debt Transaction with pagination
+     * get all debt Transaction with pagination for the authenticated user
+     * @param debtId
+     * @param page
+     * @param size
+     * @returns ApiResponse OK
+     * @throws ApiError
+     */
+    public static getAllDebtTransactions(
+        debtId: string,
+        page?: number,
+        size: number = 10,
+    ): CancelablePromise<ApiResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/debts-transactions/{debtId}/all',
+            path: {
+                'debtId': debtId,
+            },
+            query: {
+                'page': page,
+                'size': size,
+            },
+        });
+    }
+    /**
+     * get all adjustment debt Transaction
+     * get all adjustment debt Transaction for the authenticated user
+     * @param debtId
+     * @param page
+     * @param size
+     * @returns ApiResponse OK
+     * @throws ApiError
+     */
+    public static getAllAdjustmentDebtTransactions(
+        debtId: string,
+        page?: number,
+        size: number = 10,
+    ): CancelablePromise<ApiResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/debts-transactions/{debtId}/adjustment',
+            path: {
+                'debtId': debtId,
+            },
+            query: {
+                'page': page,
+                'size': size,
+            },
+        });
+    }
+    /**
      * get all debt Transaction
      * get all debt Transaction for the authenticated user
      * @param debtId
      * @returns ApiResponse OK
      * @throws ApiError
      */
-    public static getAllDebtTransaction(
+    public static getAllDebtTransactions1(
         debtId: string,
     ): CancelablePromise<ApiResponse> {
         return __request(OpenAPI, {
@@ -103,6 +181,32 @@ export class DebtTransactionsService {
             url: '/api/v1/debts-transactions/id/{debtId}',
             path: {
                 'debtId': debtId,
+            },
+        });
+    }
+    /**
+     * get all received debt Transaction
+     * get all received debt Transaction for the authenticated user
+     * @param debtId
+     * @param page
+     * @param size
+     * @returns ApiResponse OK
+     * @throws ApiError
+     */
+    public static getAllReceivedDebtTransactions(
+        debtId: string,
+        page?: number,
+        size: number = 10,
+    ): CancelablePromise<ApiResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/debts-transactions/id/{debtId}/received',
+            path: {
+                'debtId': debtId,
+            },
+            query: {
+                'page': page,
+                'size': size,
             },
         });
     }
