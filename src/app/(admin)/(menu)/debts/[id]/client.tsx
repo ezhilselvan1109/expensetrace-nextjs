@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { DebtTransaction } from "../../../../../../types";
+import { DebtTransaction } from "../../../../../types";
 import { DebtService, DebtTransactionsService } from "@/api-client";
 import { ArrowDownCircle, ArrowUpCircle, Pencil, PlusCircle, Repeat, Trash2 } from "lucide-react";
 import Modal from "../(component)/modal";

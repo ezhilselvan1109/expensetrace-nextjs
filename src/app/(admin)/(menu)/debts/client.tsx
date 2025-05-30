@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { DebtsType } from "../../../../../types";
+import { DebtsType } from "../../../../types";
 import DebtTable from "./(component)/debtTable";
 import { ArrowDownCircle, ArrowUpCircle, HelpCircle } from "lucide-react";
 import Modal from "./(component)/modal";

@@ -1,7 +1,6 @@
-// hooks/useDebts.ts
 import useSWR from "swr";
 import { DebtService } from "@/api-client";
-import { Debt } from "../../types";
+import { Debt } from "../types";
 
 const fetchAllDebts = async (page: number) => {
   const res = await DebtService.getAllDebt(page);
