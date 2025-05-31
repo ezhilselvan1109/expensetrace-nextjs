@@ -1,38 +1,43 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import {
-  Pencil, X, Check,
-} from 'lucide-react';
+import { Pencil, Folder } from 'lucide-react';
+import { mutate } from 'swr';
 
-import { CategoryService } from '@/api-client'; // Make sure CategoryService has setDefaultExpenseCategory and setDefaultIncomeCategory
+import { CategoryService } from '@/api-client';
+import Modal from './(component)/model';
 
 type Category = {
   id: string;
   name: string;
   type: number;
+  icon: string; // Added icon property
+  color: string;
 };
 
-type Props = {
+interface Props {
+  iconMap: Record<string, React.ElementType>;
   defaultCategorie: Category | undefined;
   defaultIsLoading: boolean;
   defaultError: boolean;
   categories: Category[];
-};
+}
 
-export default function DefaultCategoryEditor({ defaultCategorie, defaultIsLoading, defaultError, categories }: Props) {
+export default function DefaultCategoryEditor({
+  iconMap,
+  defaultCategorie,
+  defaultIsLoading,
+  defaultError,
+  categories,
+}: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
-  const router = useRouter();
-
-  const handleSetDefault = async () => {
-    if (!selectedCategoryId) return;
-
+  
+  const handleSetDefault = async (catId: string) => {
     setUpdating(true);
     try {
-      const selected = categories.find((cat) => cat.id === selectedCategoryId);
+      const selected = categories.find((cat) => cat.id === catId);
       if (!selected) return;
 
       if (selected.type === 1) {
@@ -40,9 +45,9 @@ export default function DefaultCategoryEditor({ defaultCategorie, defaultIsLoadi
       } else if (selected.type === 2) {
         await CategoryService.updateDefaultIncomeCategory(selected.id);
       }
-
+      mutate(['defaultCategorie', selected.type === 1 ? 'Expense' : 'Income'], selected, false);
+      setSelectedCategoryId(null);
       setModalOpen(false);
-      router.refresh();
     } catch (error) {
       console.error('Failed to update default category', error);
     } finally {
@@ -50,8 +55,40 @@ export default function DefaultCategoryEditor({ defaultCategorie, defaultIsLoadi
     }
   };
 
+  const buttonItems = categories
+  .filter((cat) => cat.id !== defaultCategorie?.id)
+  .map((cat) => ({
+    id: cat.id,
+    label: cat.name,
+    description: cat.type === 1 ? 'Expense Category' : 'Income Category',
+    icon: (() => {
+      const IconComponent = iconMap[cat.icon];
+      return IconComponent ? <IconComponent className="w-5 h-5" /> : <Folder className="w-5 h-5" />;
+    })(),
+    bgColorClass:
+      selectedCategoryId === cat.id
+        ? 'bg-blue-600'
+        : 'bg-gray-100 dark:bg-gray-800',
+    textColorClass:
+      selectedCategoryId === cat.id
+        ? 'text-white'
+        : 'text-gray-800 dark:text-white',
+    iconColorClass:
+      selectedCategoryId === cat.id
+        ? `bg-${cat.color} text-blue-600`
+        : `bg-${cat.color} text-gray-700 dark:text-gray-200`,
+    hoverBgColorClass:
+      selectedCategoryId === cat.id
+        ? 'hover:bg-blue-700'
+        : 'hover:bg-gray-200 dark:hover:bg-gray-700',
+    onClick: async () => {
+      setSelectedCategoryId(cat.id);
+      await handleSetDefault(cat.id);
+    },
+  }));
+
   return (
-    <div className='pb-4'>
+    <div className="pb-4">
       {defaultIsLoading ? (
         <div className="h-26 pb-2 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse" />
       ) : defaultError ? (
@@ -60,7 +97,9 @@ export default function DefaultCategoryEditor({ defaultCategorie, defaultIsLoadi
         <div className="flex flex-row justify-between items-center p-3 border rounded-lg shadow-sm">
           <div>
             <div className="text-sm font-semibold">Default Category</div>
-            <span className="text-xs text-gray-600 dark:text-gray-300">{defaultCategorie?.name}</span>
+            <span className="text-xs text-gray-600 dark:text-gray-300">
+              {defaultCategorie?.name}
+            </span>
           </div>
           <button
             onClick={() => setModalOpen(true)}
@@ -72,51 +111,23 @@ export default function DefaultCategoryEditor({ defaultCategorie, defaultIsLoadi
         </div>
       )}
 
-      {modalOpen && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl w-full max-w-md shadow-lg">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Select Default Category</h2>
-              <button onClick={() => setModalOpen(false)}>
-                <X className="w-5 h-5 text-gray-500 hover:text-gray-700 dark:text-gray-300" />
-              </button>
-            </div>
-
-            <div className="space-y-2 max-h-60 overflow-y-auto">
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategoryId(cat.id)}
-                  className={`w-full flex justify-between items-center p-2 rounded-md border transition-all ${
-                    selectedCategoryId === cat.id
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  <span>{cat.name}</span>
-                  {selectedCategoryId === cat.id && <Check className="w-4 h-4" />}
-                </button>
-              ))}
-            </div>
-
-            <div className="mt-4 flex justify-end gap-2">
-              <button
-                onClick={() => setModalOpen(false)}
-                className="px-4 py-2 text-sm rounded-md bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSetDefault}
-                disabled={!selectedCategoryId || updating}
-                className="px-4 py-2 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
-              >
-                {updating ? 'Updating...' : 'Set Default'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <Modal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title="Select Default Category"
+        description="Choose a category to set as default."
+        buttons={buttonItems}
+        selectedId={selectedCategoryId}
+        onSelect={(id) => setSelectedCategoryId(id)}
+        onConfirm={() => {
+          if (selectedCategoryId) {
+            handleSetDefault(selectedCategoryId);
+          }
+        }}
+        confirmDisabled={!selectedCategoryId}
+        loading={updating}
+        confirmText="Set Default"
+      />
     </div>
   );
 }
