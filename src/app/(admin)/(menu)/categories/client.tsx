@@ -106,6 +106,7 @@ export default function CategoryList() {
 
         {/* Default Category Editor */}
         <DefaultCategoryEditor
+          iconMap={iconMap}
           defaultCategorie={defaultCategorie}
           defaultIsLoading={defaultIsLoading}
           defaultError={defaultError}
