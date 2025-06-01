@@ -1,19 +1,19 @@
 'use client';
 
-import { DebtTransactionRequestDto, DebtTransactionsService } from '@/api-client';
+import { RecordRequestDto, RecordsService } from '@/api-client';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
-export default function CreateDebtTransactionPage() {
+export default function CreateRecordPage() {
   const { id } = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
   const type = searchParams.get('type');
   const parsedType = type === '1' || type === '2' || type === '3'
-    ? (type as DebtTransactionRequestDto.type)
+    ? (type as RecordRequestDto.type)
     : undefined;
 
-  const [form, setForm] = useState<DebtTransactionRequestDto>({
+  const [form, setForm] = useState<RecordRequestDto>({
     date: '',
     amount: 0,
     description: '',
@@ -28,7 +28,7 @@ export default function CreateDebtTransactionPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await DebtTransactionsService.addDebtTransaction(id as string, form);
+      await RecordsService.addRecord(id as string, form);
       router.push(`/debts/${id}`);
     } catch {
       alert('Error creating debt');

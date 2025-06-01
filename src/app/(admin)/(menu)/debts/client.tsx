@@ -7,6 +7,7 @@ import { ArrowDownCircle, ArrowUpCircle, HelpCircle } from "lucide-react";
 import Modal from "./(component)/modal";
 import Link from "next/link";
 import { useDebts } from "@/hooks/useDebts";
+import { formatCurrency } from "@/lib/util";
 
 export default function DebtsPage() {
   const [activeTab, setActiveTab] = useState<"All" | "Lending" | "Borrowing">("All");
@@ -74,7 +75,7 @@ export default function DebtsPage() {
             Total Payable
           </div>
           <div className="text-3xl font-bold text-red-600">
-            {`₹`+600.0}
+           {formatCurrency(600)}
           </div>
         </div>
 
@@ -83,7 +84,7 @@ export default function DebtsPage() {
             Total Receivable
           </div>
           <div className="text-3xl font-bold text-green-600">
-            {`₹`+`6,000.0`}
+            {formatCurrency(500)}
           </div>
         </div>
       </div>

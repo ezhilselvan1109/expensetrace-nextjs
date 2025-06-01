@@ -1480,6 +1480,70 @@
         }
       }
     },
+    "/api/v1/records/{debtId}/total-received": {
+      "get": {
+        "tags": [
+          " Records"
+        ],
+        "summary": "Get total received",
+        "operationId": "getTotalReceived",
+        "parameters": [
+          {
+            "name": "debtId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/records/{debtId}/total-paid": {
+      "get": {
+        "tags": [
+          " Records"
+        ],
+        "summary": "Get total-paid",
+        "operationId": "getTotalPaid",
+        "parameters": [
+          {
+            "name": "debtId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/records/{debtId}/paid": {
       "get": {
         "tags": [
@@ -1625,48 +1689,6 @@
             }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/records/total-received": {
-      "get": {
-        "tags": [
-          " Records"
-        ],
-        "summary": "Get total received",
-        "operationId": "getTotalReceived",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/records/total-paid": {
-      "get": {
-        "tags": [
-          " Records"
-        ],
-        "summary": "Get total-paid",
-        "operationId": "getTotalPaid",
         "responses": {
           "200": {
             "description": "OK",

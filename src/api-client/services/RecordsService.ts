@@ -89,6 +89,40 @@ export class RecordsService {
         });
     }
     /**
+     * Get total received
+     * @param debtId
+     * @returns ApiResponse OK
+     * @throws ApiError
+     */
+    public static getTotalReceived(
+        debtId: string,
+    ): CancelablePromise<ApiResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/records/{debtId}/total-received',
+            path: {
+                'debtId': debtId,
+            },
+        });
+    }
+    /**
+     * Get total-paid
+     * @param debtId
+     * @returns ApiResponse OK
+     * @throws ApiError
+     */
+    public static getTotalPaid(
+        debtId: string,
+    ): CancelablePromise<ApiResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/records/{debtId}/total-paid',
+            path: {
+                'debtId': debtId,
+            },
+        });
+    }
+    /**
      * get all paid debt Record
      * get all paid debt Record for the authenticated user
      * @param debtId
@@ -164,28 +198,6 @@ export class RecordsService {
                 'page': page,
                 'size': size,
             },
-        });
-    }
-    /**
-     * Get total received
-     * @returns ApiResponse OK
-     * @throws ApiError
-     */
-    public static getTotalReceived(): CancelablePromise<ApiResponse> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/v1/records/total-received',
-        });
-    }
-    /**
-     * Get total-paid
-     * @returns ApiResponse OK
-     * @throws ApiError
-     */
-    public static getTotalPaid(): CancelablePromise<ApiResponse> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/v1/records/total-paid',
         });
     }
     /**
