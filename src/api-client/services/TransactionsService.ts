@@ -100,53 +100,6 @@ export class TransactionsService {
         });
     }
     /**
-     * Search transactions with filters
-     * @param type
-     * @param accountId
-     * @param categoryId
-     * @param tagId
-     * @param description
-     * @param minAmount
-     * @param maxAmount
-     * @param dateFrom
-     * @param dateTo
-     * @param page
-     * @param size
-     * @returns ApiResponse OK
-     * @throws ApiError
-     */
-    public static searchTransactions(
-        type?: '1' | '2' | '3',
-        accountId?: string,
-        categoryId?: string,
-        tagId?: string,
-        description?: string,
-        minAmount?: number,
-        maxAmount?: number,
-        dateFrom?: string,
-        dateTo?: string,
-        page?: number,
-        size: number = 10,
-    ): CancelablePromise<ApiResponse> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/v1/transactions/search',
-            query: {
-                'type': type,
-                'accountId': accountId,
-                'categoryId': categoryId,
-                'tagId': tagId,
-                'description': description,
-                'minAmount': minAmount,
-                'maxAmount': maxAmount,
-                'dateFrom': dateFrom,
-                'dateTo': dateTo,
-                'page': page,
-                'size': size,
-            },
-        });
-    }
-    /**
      * Get all transactions
      * @returns ApiResponse OK
      * @throws ApiError

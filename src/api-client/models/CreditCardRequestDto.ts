@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type CreditCardAccountRequestDto = {
+export type CreditCardRequestDto = {
     name?: string;
     currentAvailableLimit?: number;
     totalCreditLimit?: number;

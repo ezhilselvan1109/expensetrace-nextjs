@@ -7,6 +7,7 @@ import { ArrowDownCircle, ArrowUpCircle, HelpCircle } from "lucide-react";
 import Modal from "./(component)/modal";
 import Link from "next/link";
 import { useDebts } from "@/hooks/useDebts";
+import { formatCurrency } from "@/lib/util";
 
 export default function DebtsPage() {
   const [activeTab, setActiveTab] = useState<"All" | "Lending" | "Borrowing">("All");
@@ -55,7 +56,7 @@ export default function DebtsPage() {
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center space-x-2">
-          <h1 className="text-2xl font-bold">Debts</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Debts</h1>
           <Link href="/debts/help" className="text-blue-600 hover:text-blue-800">
             <HelpCircle size={20} />
           </Link>
@@ -68,8 +69,28 @@ export default function DebtsPage() {
         </button>
       </div>
 
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="p-4 bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 hover:shadow-md transition cursor-pointer">
+          <div className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-2">
+            Total Payable
+          </div>
+          <div className="text-3xl font-bold text-red-600">
+           {formatCurrency(600)}
+          </div>
+        </div>
+
+        <div className="p-4 bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 hover:shadow-md transition cursor-pointer">
+          <div className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-2">
+            Total Receivable
+          </div>
+          <div className="text-3xl font-bold text-green-600">
+            {formatCurrency(500)}
+          </div>
+        </div>
+      </div>
+
       {/* Tabs */}
-      <div className="flex bg-gray-100 dark:bg-gray-800 rounded-full p-1 mb-6 max-w-md mx-auto">
+      <div className="flex justify-between items-center bg-gray-100 dark:bg-gray-800 rounded-full mb-6">
         {["All", "Lending", "Borrowing"].map((tab) => (
           <button
             key={tab}
@@ -111,11 +132,10 @@ export default function DebtsPage() {
                 [activeTab]: index,
               }))
             }
-            className={`px-3 py-1 rounded text-sm transition ${
-              index === page
+            className={`px-3 py-1 rounded text-sm transition ${index === page
                 ? "bg-blue-600 text-white"
                 : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-            }`}
+              }`}
           >
             {index + 1}
           </button>

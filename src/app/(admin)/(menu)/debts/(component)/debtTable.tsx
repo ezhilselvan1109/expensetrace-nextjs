@@ -4,6 +4,7 @@ import React from "react";
 import { Debt } from "../../../../../types";
 import { ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 import Link from "next/link";
+import { formatCurrency } from "@/lib/util";
 
 export default function DebtTable({
   debts,
@@ -73,6 +74,7 @@ export default function DebtTable({
                 <tr>
                   <th className="px-6 py-4">Name</th>
                   <th className="px-6 py-4">Due Date</th>
+                  <th className="px-6 py-4">Amount</th>
                   <th className="px-6 py-4">Type</th>
                 </tr>
               </thead>
@@ -85,6 +87,7 @@ export default function DebtTable({
                   >
                     <td className="px-6 py-4 text-gray-800 dark:text-white">{debt.personName}</td>
                     <td className="px-6 py-4 text-gray-700 dark:text-gray-300">{debt.dueDate}</td>
+                    <td className="px-6 py-4 text-gray-700 dark:text-gray-300">{formatCurrency(debt.amount)}</td>
                     <td className="px-6 py-4 flex items-center gap-2 text-gray-700 dark:text-gray-300">
                       {renderIcon(debt.type)}
                       {debt.type === 1 ? "Lending" : "Borrowing"}
@@ -103,8 +106,13 @@ export default function DebtTable({
                 onClick={() => onClick(debt.id)}
                 className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border border-gray-200 dark:border-gray-700 hover:shadow-md transition cursor-pointer"
               >
-                <div className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                  {debt.personName}
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                    {debt.personName}
+                  </div>
+                  <div>
+                    <span className="text-2xl font-bold text-gray-900 dark:text-white">{formatCurrency(debt.amount)}</span>
+                  </div>
                 </div>
                 <div className="flex justify-between text-gray-700 dark:text-gray-300 text-sm">
                   <div>

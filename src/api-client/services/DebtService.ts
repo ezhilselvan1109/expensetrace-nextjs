@@ -105,6 +105,28 @@ export class DebtService {
     }
     /**
      * Get all Lending debts with pagination
+     * @returns ApiResponse OK
+     * @throws ApiError
+     */
+    public static getReceivable(): CancelablePromise<ApiResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/debts/receivable',
+        });
+    }
+    /**
+     * Get all Lending debts with pagination
+     * @returns ApiResponse OK
+     * @throws ApiError
+     */
+    public static getPayable(): CancelablePromise<ApiResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/debts/payable',
+        });
+    }
+    /**
+     * Get all Lending debts with pagination
      * @param page
      * @param size
      * @returns ApiResponse OK

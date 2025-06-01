@@ -17,6 +17,12 @@ const fetchBorrowingDebts = async (page: number) => {
   return res.data;
 };
 
+
+const fetchDebtById = async (id: string) => {
+  const res = await DebtService.getDebt(id);
+  return res.data;
+};
+
 export function useDebts(type: "All" | "Lending" | "Borrowing", page: number) {
   const getKey = () => {
     switch (type) {
@@ -45,6 +51,22 @@ export function useDebts(type: "All" | "Lending" | "Borrowing", page: number) {
   return {
     debts: (data?.content as Debt[]) || [],
     totalPages: data?.totalPages || 1,
+    isLoading,
+    isError: error,
+    mutate,
+  };
+}
+
+export function useDebt(id: string | null) {
+  const shouldFetch = !!id;
+
+  const { data, error, isLoading, mutate } = useSWR(
+    shouldFetch ? ["debt", id] : null,
+    () => fetchDebtById(id as string)
+  );
+
+  return {
+    debt: data as Debt | undefined,
     isLoading,
     isError: error,
     mutate,

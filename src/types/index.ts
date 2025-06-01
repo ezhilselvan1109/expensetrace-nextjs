@@ -3,7 +3,7 @@ export enum DebtsType {
   BORROWING = 2,
 }
 
-export enum DebtTransactionType {
+export enum RecordType {
   PAID = 1,
   RECEIVED = 2,
   ADJUSTMENT = 3,
@@ -13,16 +13,17 @@ export interface Debt {
   id: string;
   personName: string;
   dueDate: string;
+  amount:number;
   additionalDetail: string;
   type: DebtsType;
 }
 
-export interface DebtTransaction {
+export interface Record {
   id: string;
   date: string;
   time: string;
   amount: number;
   description: string;
-  type: DebtTransactionType;
+  type: RecordType;
   accountId: string;
 }
