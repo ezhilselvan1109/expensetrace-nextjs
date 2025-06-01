@@ -2,6 +2,7 @@
 
 import { AccountService } from '@/api-client';
 import type { ApiResponse } from '@/api-client';
+import Switch from '@/components/form/switch/Switch';
 import { HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -118,16 +119,7 @@ export default function ClientPage() {
           Transactions based balance, actual may vary.
         </p>
         <label className="inline-flex items-center cursor-pointer">
-          <span className="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-            Show Balance
-          </span>
-          <input
-            type="checkbox"
-            className="sr-only peer"
-            checked={showBalance}
-            onChange={() => setShowBalance(!showBalance)}
-          />
-          <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600" />
+          <Switch label={"Show Balance"} defaultChecked={showBalance} onChange={() => setShowBalance(!showBalance)}/>
         </label>
       </div>
 
