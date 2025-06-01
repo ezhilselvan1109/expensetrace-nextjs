@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type DebtTransactionRequestDto = {
+export type RecordRequestDto = {
     date?: string;
     amount?: number;
     description?: string;
@@ -10,9 +10,9 @@ export type DebtTransactionRequestDto = {
     /**
      * Debt Transaction Type: 1=PAID, 2=RECEIVED, 3=ADJUSTMENT
      */
-    type?: DebtTransactionRequestDto.type;
+    type?: RecordRequestDto.type;
 };
-export namespace DebtTransactionRequestDto {
+export namespace RecordRequestDto {
     /**
      * Debt Transaction Type: 1=PAID, 2=RECEIVED, 3=ADJUSTMENT
      */

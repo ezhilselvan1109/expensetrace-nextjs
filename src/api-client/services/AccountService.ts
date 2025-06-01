@@ -3,9 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { ApiResponse } from '../models/ApiResponse';
-import type { BankAccountRequestDto } from '../models/BankAccountRequestDto';
-import type { CreditCardAccountRequestDto } from '../models/CreditCardAccountRequestDto';
-import type { WalletAccountRequestDto } from '../models/WalletAccountRequestDto';
+import type { BankRequestDto } from '../models/BankRequestDto';
+import type { CreditCardRequestDto } from '../models/CreditCardRequestDto';
+import type { WalletRequestDto } from '../models/WalletRequestDto';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -38,7 +38,7 @@ export class AccountService {
      */
     public static updateWalletAccount(
         id: string,
-        requestBody: WalletAccountRequestDto,
+        requestBody: WalletRequestDto,
     ): CancelablePromise<ApiResponse> {
         return __request(OpenAPI, {
             method: 'PUT',
@@ -60,7 +60,7 @@ export class AccountService {
      */
     public static updateCreditCardAccount(
         id: string,
-        requestBody: CreditCardAccountRequestDto,
+        requestBody: CreditCardRequestDto,
     ): CancelablePromise<ApiResponse> {
         return __request(OpenAPI, {
             method: 'PUT',
@@ -82,7 +82,7 @@ export class AccountService {
      */
     public static updateBankAccount(
         id: string,
-        requestBody: BankAccountRequestDto,
+        requestBody: BankRequestDto,
     ): CancelablePromise<ApiResponse> {
         return __request(OpenAPI, {
             method: 'PUT',
@@ -114,7 +114,7 @@ export class AccountService {
      * @throws ApiError
      */
     public static addWallet(
-        requestBody: WalletAccountRequestDto,
+        requestBody: WalletRequestDto,
     ): CancelablePromise<ApiResponse> {
         return __request(OpenAPI, {
             method: 'POST',
@@ -131,7 +131,7 @@ export class AccountService {
      * @throws ApiError
      */
     public static addDebitCard(
-        requestBody: CreditCardAccountRequestDto,
+        requestBody: CreditCardRequestDto,
     ): CancelablePromise<ApiResponse> {
         return __request(OpenAPI, {
             method: 'POST',
@@ -160,7 +160,7 @@ export class AccountService {
      * @throws ApiError
      */
     public static addBankAccount(
-        requestBody: BankAccountRequestDto,
+        requestBody: BankRequestDto,
     ): CancelablePromise<ApiResponse> {
         return __request(OpenAPI, {
             method: 'POST',

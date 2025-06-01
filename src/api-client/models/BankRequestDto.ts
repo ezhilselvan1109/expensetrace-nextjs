@@ -2,8 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type WalletAccountRequestDto = {
+import type { PaymentModeRequestDto } from './PaymentModeRequestDto';
+export type BankRequestDto = {
     name?: string;
     currentBalance?: number;
+    linkedPaymentModes?: Array<PaymentModeRequestDto>;
 };
 

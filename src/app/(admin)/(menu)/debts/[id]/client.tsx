@@ -6,16 +6,16 @@ import { DebtService } from "@/api-client";
 import {
   ArrowDownCircle,
   ArrowUpCircle,
-  Pencil,
-  PlusCircle,
   Repeat,
   Trash2,
 } from "lucide-react";
 import Modal from "../(component)/modal";
-import { DebtTransaction } from "@/types";
-import { useDebtTransactions } from "@/hooks/useDebtTransactions";
+import { Record } from "@/types";
+import { useRecord, useRecords } from "@/hooks/useRecords";
+import { useDebt } from "@/hooks/useDebts";
+import { formatCurrency } from "@/lib/util";
 
-export default function DebtTransactionsPage() {
+export default function RecordsPage() {
   const { id } = useParams();
   const router = useRouter();
 
@@ -31,8 +31,10 @@ export default function DebtTransactionsPage() {
   });
 
   const page = tabPage[activeTab];
-  const { transactions, totalPages, isLoading } = useDebtTransactions(id as string, activeTab, page);
-  console.log("transactions : " + transactions)
+  const { records, totalPages,totalElements, isLoading } = useRecords(id as string, activeTab, page);
+  const { debt, isLoading: debtIsLoading } = useDebt(id as string);
+  const { data: totalPaid, isLoading: totalPaidIsLoading } = useRecord(id as string, 1);
+  const { data: totalReceived, isLoading: totalReceivedIsLoading } = useRecord(id as string, 2);
   const buttons = [
     {
       label: "Money Received",
@@ -56,9 +58,9 @@ export default function DebtTransactionsPage() {
     },
   ];
 
-  const renderIcon = (type: number) => {
-    if (type === 1) return <ArrowUpCircle className="text-red-600" size={18} />;
-    if (type === 2) return <ArrowDownCircle className="text-green-600" size={18} />;
+  const renderIcon = (type: number, size: number) => {
+    if (type === 1) return <ArrowUpCircle className="text-red-600" size={size} />;
+    if (type === 2) return <ArrowDownCircle className="text-green-600" size={size} />;
     return <Repeat className="text-blue-500" size={18} />;
   };
 
@@ -72,9 +74,9 @@ export default function DebtTransactionsPage() {
     router.push(`/debts/${id}/create?type=${type}`);
   };
 
-  const confirmDelete = () => {
-    setIsDeleteModalOpen(true);
-  };
+  // const confirmDelete = () => {
+  //   setIsDeleteModalOpen(true);
+  // };
 
   const handleDeleteDebt = async () => {
     if (!id) return;
@@ -94,37 +96,96 @@ export default function DebtTransactionsPage() {
     <div className="max-w-4xl mx-auto">
       <div className="flex flex-wrap justify-between items-center gap-2 mb-6">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-          Debt Transactions
+          {debtIsLoading ? <div className="h-8 w-30 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" /> : <>
+            {debt?.personName}
+          </>
+          }
         </h1>
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => router.push(`/debts/update?id=${id}`)}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600"
-          >
-            <Pencil size={16} />
-            Edit Debt
-          </button>
-          <button
-            onClick={confirmDelete}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            <Trash2 size={16} />
-            Delete Debt
-          </button>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            <PlusCircle size={16} />
-            Add Record
-          </button>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl shadow transition"
+        >
+          + Add Record
+        </button>
+      </div>
+
+      <div className="mb-4 p-4 bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 hover:shadow-md transition cursor-pointer">
+        <div className="flex flex-col mb-2">
+          <div className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-2">
+            {debtIsLoading ? <div className="h-5 w-30 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" /> : <>
+              Total {debt?.type == 1 ? 'Receivable' : 'Payable'}
+            </>}
+          </div>
+          <div className={`text-3xl font-bold ${debt?.type == 1 ? 'text-green-600' : 'text-red-600'}`}>
+            {debtIsLoading ? <div className="h-8 w-35 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" /> : <>
+              {formatCurrency(debt?.amount ?? 0)}
+            </>
+            }
+          </div>
+          <div className="flex text-sm text-gray-600">
+            Incorrect? <span className="flex text-gray-900 dark:text-gray-100">Edit</span>
+          </div>
+        </div>
+
+        <div className="flex justify-between mb-3">
+          <div className="flex flex-row items-center gap-1">
+            {renderIcon(1, 45)}
+            <div className="flex flex-col">
+              <div className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-2">
+                Total Paid
+              </div>
+              <div className="text-md">
+                {totalPaidIsLoading ? <div className="h-7 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" /> : <>
+                  {formatCurrency(totalPaid??0)}
+                </>
+                }
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-row items-center gap-2">
+            {renderIcon(2, 45)}
+            <div className="flex flex-col"><div className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-2">
+              Total Received
+            </div>
+              <div className="text-md">
+                {totalReceivedIsLoading ? <div className="h-7 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" /> : <>
+                  {formatCurrency(totalReceived??0)}
+                </>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-between items-center">
+          <div className="text-sm text-gray-600 dark:text-gray-300">
+            {debtIsLoading ? <div className="h-5 w-25 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" /> : <>
+              {debt?.dueDate}
+            </>
+            }
+          </div>
+          <div className="text-sm text-gray-600 dark:text-gray-300">
+            {totalElements} records
+          </div>
         </div>
       </div>
 
+      {/* <div className="flex justify-between items-center mb-4">
+        <div className="text-sm text-gray-600 dark:text-gray-300">
+          Showing {records.length} records
+        </div>
+        <button
+          onClick={confirmDelete}
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+        >
+          <Trash2 size={16} />
+          Delete Debt
+        </button>
+      </div> */}
+
       {/* Tabs */}
-      <div className="border-b border-gray-200 dark:border-neutral-700 mb-4">
+      <div className="border-gray-200 dark:border-neutral-700 mb-4">
         <nav
-          className="flex justify-center gap-4 flex-wrap"
+          className="flex justify-between items-center bg-gray-100 dark:bg-gray-800 rounded-xl"
           role="tablist"
         >
           {['ALL', 'PAID', 'RECEIVED', 'ADJUSTMENT'].map((value) => (
@@ -132,10 +193,10 @@ export default function DebtTransactionsPage() {
               key={value}
               onClick={() => setActiveTab(value as typeof activeTab)}
               type="button"
-              className={`py-2 px-4 rounded-md text-sm font-medium
+              className={`flex-1 text-sm font-medium rounded-xl py-2 transition-all duration-200
                 ${activeTab === value
-                  ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200'
-                  : 'text-gray-600 hover:bg-gray-100 dark:text-neutral-300 dark:hover:bg-neutral-700'}
+                  ? 'bg-white dark:bg-gray-900 shadow text-black dark:text-white'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white'}
               `}
               role="tab"
               aria-selected={activeTab === value}
@@ -155,9 +216,9 @@ export default function DebtTransactionsPage() {
             />
           ))}
         </div>
-      ) : transactions.length === 0 ? (
+      ) : records.length === 0 ? (
         <div className="text-center text-gray-500 dark:text-gray-400 py-12 text-lg">
-          No transactions found.
+          No records found.
         </div>
       ) : (
         <>
@@ -174,20 +235,20 @@ export default function DebtTransactionsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                {transactions.map((transaction: DebtTransaction) => (
+                {records.map((transaction: Record) => (
                   <tr
                     key={transaction.id}
                     className="hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer"
-                    onClick={() => router.push(`/debts/${id}/transactions/${transaction.id}`)}
+                    onClick={() => router.push(`/debts/${id}/records/${transaction.id}`)}
                   >
                     <td className="px-6 py-4 text-gray-800 dark:text-white">{transaction.date || '-'}</td>
                     <td className="px-6 py-4 text-gray-700 dark:text-gray-300">{transaction.time || '-'}</td>
                     <td className="px-6 py-4 flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                      {renderIcon(transaction.type)}
+                      {renderIcon(transaction.type, 18)}
                       <span>{renderTypeText(transaction.type)}</span>
                     </td>
                     <td className="px-6 py-4 text-right font-semibold text-gray-800 dark:text-white">
-                      {typeof transaction.amount === "number" ? `$${transaction.amount.toFixed(2)}` : '-'}
+                      {formatCurrency(transaction.amount)}
                     </td>
                     <td className="px-6 py-4 text-gray-700 dark:text-gray-300">{transaction.description || '-'}</td>
                   </tr>
@@ -198,19 +259,19 @@ export default function DebtTransactionsPage() {
 
           {/* Mobile Cards */}
           <div className="md:hidden space-y-4 mt-4">
-            {transactions.map((transaction: DebtTransaction) => (
+            {records.map((transaction: Record) => (
               <div
                 key={transaction.id}
-                onClick={() => router.push(`/debts/${id}/transactions/${transaction.id}`)}
+                onClick={() => router.push(`/debts/${id}/records/${transaction.id}`)}
                 className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border border-gray-200 dark:border-gray-700 hover:shadow-md transition cursor-pointer"
               >
                 <div className="flex justify-between items-center mb-2">
                   <div className="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
-                    {renderIcon(transaction.type)}
+                    {renderIcon(transaction.type, 18)}
                     <span>{renderTypeText(transaction.type)}</span>
                   </div>
                   <div className="text-base font-bold text-gray-800 dark:text-white">
-                    {typeof transaction.amount === "number" ? `$${transaction.amount.toFixed(2)}` : '-'}
+                    {formatCurrency(transaction.amount)}
                   </div>
                 </div>
                 <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
