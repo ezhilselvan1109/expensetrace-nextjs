@@ -27,3 +27,11 @@ export interface Record {
   type: RecordType;
   accountId: string;
 }
+
+export interface User {
+  id:string;
+  firstName:string;
+  lastName:string;
+  email:string;
+}
+

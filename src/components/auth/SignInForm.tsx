@@ -34,7 +34,6 @@ export default function SignInForm() {
       } else {
         toast.error("Login failed");
       }
-    } finally {
       setLoading(false);
     }
   };

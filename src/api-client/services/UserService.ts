@@ -53,7 +53,7 @@ export class UserService {
      * @returns ApiResponse OK
      * @throws ApiError
      */
-    public static getUserById(): CancelablePromise<ApiResponse> {
+    public static getMe(): CancelablePromise<ApiResponse> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/v1/users/me',
