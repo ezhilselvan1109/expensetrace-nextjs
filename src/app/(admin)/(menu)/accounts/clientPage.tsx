@@ -3,6 +3,7 @@
 import { AccountService } from '@/api-client';
 import type { ApiResponse } from '@/api-client';
 import Switch from '@/components/form/switch/Switch';
+import { formatCurrency } from '@/lib/util';
 import { HelpCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -45,9 +46,6 @@ const transform = (data: RawAccount[]): Account[] =>
       : null,
     default: item.default ?? false,
   }));
-
-const formatCurrency = (amount: number | null | undefined) =>
-  `₹${amount?.toLocaleString('en-IN') ?? '0.00'}`;
 
 export default function ClientPage() {
   const router = useRouter();
@@ -119,7 +117,7 @@ export default function ClientPage() {
           Transactions based balance, actual may vary.
         </p>
         <label className="inline-flex items-center cursor-pointer">
-          <Switch label={"Show Balance"} defaultChecked={showBalance} onChange={() => setShowBalance(!showBalance)}/>
+          <Switch label={"Show Balance"} defaultChecked={showBalance} onChange={() => setShowBalance(!showBalance)} />
         </label>
       </div>
 
@@ -129,11 +127,13 @@ export default function ClientPage() {
         <div className="grid grid-cols-2 gap-6">
           <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 hover:shadow-md transition cursor-pointer">
             <div className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-2">
-              Available Balance
+              {loadingAvailable ? (
+                <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+              ) : <>Available Balance</>}
             </div>
             <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
               {loadingAvailable ? (
-                <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse" />
+                <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
               ) : showBalance ? (
                 formatCurrency(typeof availableAmount === 'number' ? availableAmount : Number(availableAmount ?? 0))
               ) : (
@@ -144,11 +144,13 @@ export default function ClientPage() {
 
           <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 hover:shadow-md transition cursor-pointer">
             <div className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-2">
-              Available Credit
+              {loadingCreditUsed ? (
+                <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+              ) : <>Available Credit</>}
             </div>
             <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">
               {loadingCreditUsed ? (
-                <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse" />
+                <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
               ) : showBalance ? (
                 formatCurrency(typeof creditUsedAmount === 'number' ? creditUsedAmount : Number(creditUsedAmount ?? 0))
               ) : (
@@ -171,17 +173,20 @@ export default function ClientPage() {
           if (!loading && !accounts?.length) return null;
           return (
             <section key={type} className="mb-10">
-              <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-5">
-                {label}
-              </h2>
-
-              {loading ? (
+              {loading ? (<>
+                <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-5">
+                  <div className="h-8 w-50 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse" />
+                </h2>
                 <div className="space-y-4">
                   {[...Array(1)].map((_, i) => (
                     <div key={i} className="h-20 bg-gray-200 dark:bg-gray-700 rounded-2xl animate-pulse" />
                   ))}
                 </div>
-              ) : accounts?.length ? (
+              </>
+              ) : accounts?.length ? (<>
+                <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-5">
+                  {label}
+                </h2>
                 <ul className="space-y-4">
                   {accounts.map((acc) => (
                     <li
@@ -209,6 +214,7 @@ export default function ClientPage() {
                     </li>
                   ))}
                 </ul>
+              </>
               ) : (
                 <p className="text-gray-500 dark:text-gray-400">No accounts found.</p>
               )}

@@ -1367,7 +1367,7 @@
         ],
         "summary": "Get current user",
         "description": "Returns user details from JWT token context.",
-        "operationId": "getUserById",
+        "operationId": "getMe",
         "responses": {
           "200": {
             "description": "OK",

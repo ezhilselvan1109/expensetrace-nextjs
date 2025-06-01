@@ -31,7 +31,7 @@ export default function RecordsPage() {
   });
 
   const page = tabPage[activeTab];
-  const { records, totalPages,totalElements, isLoading } = useRecords(id as string, activeTab, page);
+  const { records, totalPages, totalElements, isLoading } = useRecords(id as string, activeTab, page);
   const { debt, isLoading: debtIsLoading } = useDebt(id as string);
   const { data: totalPaid, isLoading: totalPaidIsLoading } = useRecord(id as string, 1);
   const { data: totalReceived, isLoading: totalReceivedIsLoading } = useRecord(id as string, 2);
@@ -111,50 +111,77 @@ export default function RecordsPage() {
 
       <div className="mb-4 p-4 bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 hover:shadow-md transition cursor-pointer">
         <div className="flex flex-col mb-2">
-          <div className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-2">
-            {debtIsLoading ? <div className="h-5 w-30 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" /> : <>
+          {debtIsLoading ? (<><div className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-1">
+            <div className="h-5 w-30 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          </div>
+            <div className={`mb-2 text-3xl font-bold ${debt?.type == 1 ? 'text-green-600' : 'text-red-600'}`}>
+              <div className="h-8 w-35 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            </div>
+            <div className="flex text-sm text-gray-600">
+              <div className="h-4 w-35 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            </div>
+          </>) : (<>
+            <div className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-2">
               Total {debt?.type == 1 ? 'Receivable' : 'Payable'}
-            </>}
-          </div>
-          <div className={`text-3xl font-bold ${debt?.type == 1 ? 'text-green-600' : 'text-red-600'}`}>
-            {debtIsLoading ? <div className="h-8 w-35 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" /> : <>
+            </div>
+            <div className={`text-3xl font-bold ${debt?.type == 1 ? 'text-green-600' : 'text-red-600'}`}>
               {formatCurrency(debt?.amount ?? 0)}
-            </>
-            }
-          </div>
-          <div className="flex text-sm text-gray-600">
-            Incorrect? <span className="flex text-gray-900 dark:text-gray-100">Edit</span>
-          </div>
+            </div>
+            <div className="flex text-sm text-gray-600">
+              Incorrect? <span className="flex text-gray-900 dark:text-gray-100">Edit</span>
+            </div>
+          </>)}
         </div>
 
         <div className="flex justify-between mb-3">
-          <div className="flex flex-row items-center gap-1">
-            {renderIcon(1, 45)}
-            <div className="flex flex-col">
-              <div className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-2">
-                Total Paid
-              </div>
-              <div className="text-md">
-                {totalPaidIsLoading ? <div className="h-7 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" /> : <>
-                  {formatCurrency(totalPaid??0)}
-                </>
-                }
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-row items-center gap-2">
-            {renderIcon(2, 45)}
-            <div className="flex flex-col"><div className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-2">
-              Total Received
-            </div>
-              <div className="text-md">
-                {totalReceivedIsLoading ? <div className="h-7 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" /> : <>
-                  {formatCurrency(totalReceived??0)}
-                </>
-                }
+          {totalPaidIsLoading ? <>
+            <div className="flex flex-row items-center gap-1">
+              <div className="h-13 w-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+              <div className="flex flex-col">
+                <div className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-2">
+                  <div className="h-4 w-23 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                </div>
+                <div className="text-md">
+                  <div className="h-7 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                </div>
               </div>
             </div>
-          </div>
+          </> : <>
+            <div className="flex flex-row items-center gap-1">
+              {renderIcon(1, 45)}
+              <div className="flex flex-col">
+                <div className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-2">
+                  Total Paid
+                </div>
+                <div className="text-md">{formatCurrency(totalPaid ?? 0)}
+                </div>
+              </div>
+            </div>
+          </>}
+          {totalReceivedIsLoading ? <>
+            <div className="flex flex-row items-center gap-1">
+              <div className="h-13 w-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+              <div className="flex flex-col">
+                <div className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-2">
+                  <div className="h-4 w-23 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                </div>
+                <div className="text-md">
+                  <div className="h-7 w-20 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                </div>
+              </div>
+            </div>
+          </> : <>
+            <div className="flex flex-row items-center gap-1">
+              {renderIcon(2, 45)}
+              <div className="flex flex-col">
+                <div className="text-sm text-gray-900 dark:text-gray-100 font-medium mb-2">
+                  Total Paid
+                </div>
+                <div className="text-md">{formatCurrency(totalReceived ?? 0)}
+                </div>
+              </div>
+            </div>
+          </>}
         </div>
         <div className="flex justify-between items-center">
           <div className="text-sm text-gray-600 dark:text-gray-300">
