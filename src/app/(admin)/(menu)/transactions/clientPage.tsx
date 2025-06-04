@@ -64,7 +64,7 @@ export default function ClientPage() {
           onClick={() => router.push('/transactions/add')}
           className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl shadow transition"
         >
-          + Add Transaction
+        Add +
         </button>
       </div>
 

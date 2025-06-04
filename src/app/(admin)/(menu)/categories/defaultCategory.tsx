@@ -5,7 +5,7 @@ import { Pencil, Folder } from 'lucide-react';
 import { mutate } from 'swr';
 
 import { CategoryService } from '@/api-client';
-import Modal from './(component)/model';
+import Modal from '@/components/common/model';
 
 type Category = {
   id: string;

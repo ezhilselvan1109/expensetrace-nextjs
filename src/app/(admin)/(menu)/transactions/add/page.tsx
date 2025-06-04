@@ -3,7 +3,10 @@ import TransactionForm from '../(component)/transactionForm';
 
 export default function AddTransactionPage() {
   return (
-    <div className="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">
+    <div className="min-h-screen px-2 py-3 xl:px-10 xl:py-12">
+      <div className="flex flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Add Transaction</h1>
+      </div>
       <TransactionForm />
     </div>
   );
