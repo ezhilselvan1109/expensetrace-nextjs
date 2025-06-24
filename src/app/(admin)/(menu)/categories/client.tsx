@@ -10,17 +10,10 @@ import {
   CirclePercent, Film, Clapperboard, TvMinimalPlay
 } from 'lucide-react';
 import DefaultCategoryEditor from './defaultCategory';
+import { Category } from '@/types';
 
 const tabs = ['Expense', 'Income'] as const;
 type TabType = (typeof tabs)[number];
-
-interface Category {
-  id: string;
-  name: string;
-  type: number;
-  color: string;
-  icon: string;
-}
 
 const iconMap: Record<string, React.ElementType> = {
   bus: BusFront,
@@ -87,7 +80,7 @@ export default function CategoryList() {
         </Link>
       </div>
 
-      <div className="max-w-lg mx-auto mt-5 text-gray-800 dark:text-gray-100">
+      <div className="mx-auto mt-5 text-gray-800 dark:text-gray-100">
         {/* Tabs */}
         <div className="flex bg-gray-100 dark:bg-gray-800 rounded-full p-1 mb-6">
           {tabs.map((tab) => (

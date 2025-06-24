@@ -35,3 +35,10 @@ export interface User {
   email:string;
 }
 
+export interface Category {
+  id: string;
+  name: string;
+  type: number;
+  color: string;
+  icon: string;
+}

@@ -21,7 +21,7 @@ export default function DebtsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex bg-gray-100 dark:bg-gray-800 rounded-full p-1 mb-6 max-w-md mx-auto">
+      <div className="flex bg-gray-100 dark:bg-gray-800 rounded-full p-1 mb-6 mx-auto">
         {["Monthly", "Yearly"].map((tab) => (
           <button
             key={tab}

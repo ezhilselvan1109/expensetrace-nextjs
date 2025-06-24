@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function DebtPage() {
   return (
-      <div className="min-h-screen px-2 py-3 dark:border-gray-800 md:px-1 md:py-1">
+      <div className="min-h-screen dark:border-gray-800">
         <DebtsPage/>
       </div>
   );
